@@ -13,9 +13,17 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Welcome to Home Page 🎉</h1>
-      <button onClick={handleLogout}>Logout</button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+        <h1 className="text-3xl font-bold mb-4 text-blue-900">Welcome!</h1>
+        <p className="mb-6">You are logged in.</p>
+        <button
+          onClick={handleLogout}
+          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 transition-colors"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };
