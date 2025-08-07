@@ -7,31 +7,39 @@ import { useAuth } from "../../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       const res = await axios.post("/auth/login", { email, password });
       login(res.data.token);
       navigate("/");
     } catch (err) {
-      alert("Login failed: " + err.response?.data?.message || "Unknown error");
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-900">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
+      <form onSubmit={handleSubmit} className="bg-white/90 p-12 rounded-2xl shadow-2xl w-full max-w-xl flex flex-col gap-4">
+        <h2 className="text-3xl font-extrabold mb-4 text-center text-blue-900 tracking-tight">Sign In</h2>
+        <p className="text-center text-gray-500 mb-2">Welcome back! Please login to your account.</p>
+        {error && (
+          <div className="mb-2 px-4 py-2 rounded text-center bg-red-100 text-red-700 border border-red-300 animate-fade-in">
+            {error}
+          </div>
+        )}
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           type="email"
           required
-          className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         />
         <input
           value={password}
@@ -39,11 +47,11 @@ const Login = () => {
           type="password"
           placeholder="Password"
           required
-          className="w-full p-2 mb-6 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-4 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         />
         <button
           type="submit"
-          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 transition-colors"
+          className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-800 transition-colors shadow-md"
         >
           Login
         </button>

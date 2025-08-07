@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "USER" });
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -13,26 +15,36 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setMessageType("");
     try {
       await axios.post("/auth/register", form);
-      alert("Registered successfully");
-      navigate("/login");
+      setMessage("Registration successful! Redirecting to login...");
+      setMessageType("success");
+      setTimeout(() => navigate("/login"), 1800);
     } catch (err) {
-      alert("Register failed: " + err.response?.data?.message || "Unknown error");
+      setMessage(err.response?.data?.message || "Registration failed");
+      setMessageType("error");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-900">Register</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-blue-300">
+      <form onSubmit={handleSubmit} className="bg-white/90 p-12 rounded-2xl shadow-2xl w-full max-w-xl flex flex-col gap-4">
+        <h2 className="text-3xl font-extrabold mb-4 text-center text-blue-900 tracking-tight">Create Account</h2>
+        <p className="text-center text-gray-500 mb-2">Fill out the form to register.</p>
+        {message && (
+          <div className={`mb-2 px-4 py-2 rounded text-center border animate-fade-in ${messageType === "success" ? "bg-green-100 text-green-700 border-green-300" : "bg-red-100 text-red-700 border-red-300"}`}>
+            {message}
+          </div>
+        )}
         <input
           name="name"
           value={form.name}
           onChange={handleChange}
           placeholder="Name"
           required
-          className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         />
         <input
           name="email"
@@ -41,7 +53,7 @@ const Register = () => {
           placeholder="Email"
           type="email"
           required
-          className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         />
         <input
           name="password"
@@ -50,20 +62,20 @@ const Register = () => {
           onChange={handleChange}
           placeholder="Password"
           required
-          className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         />
         <select
           name="role"
           value={form.role}
           onChange={handleChange}
-          className="w-full p-2 mb-6 border rounded focus:outline-none focus:ring-2 focus:ring-blue-900"
+          className="w-full p-3 mb-4 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 bg-blue-50"
         >
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>
         <button
           type="submit"
-          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 transition-colors"
+          className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-800 transition-colors shadow-md"
         >
           Register
         </button>
