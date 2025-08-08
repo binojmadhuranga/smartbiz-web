@@ -38,8 +38,10 @@ const Register = () => {
 
     return (
     <div className="flex items-center justify-center h-screen overflow-hidden bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
-        <form onSubmit={handleSubmit} className="bg-white/90 p-6 rounded-2xl shadow-2xl w-full max-w-md flex flex-col gap-3" style={{ height: '90vh' }}>
-                <h1 className="text-2xl font-extrabold text-center mb-1 text-blue-900">SmartBiz</h1>
+    <form onSubmit={handleSubmit} className="bg-white/90 p-4 md:p-6 lg:p-8 rounded-2xl shadow-2xl 
+           w-[95vw] sm:w-[85vw] md:max-w-md lg:max-w-lg flex flex-col gap-2 md:gap-3"
+>
+                <h1 className="text-xl md:text-2xl font-extrabold text-center mb-1 text-blue-900">SmartBiz</h1>
                 <p className="text-center text-gray-500 mb-2 text-xs">AI-Powered Business Management Suite</p>
                 {message && (
                     <div className={`mb-1 px-2 py-1 rounded text-center border animate-fade-in text-xs ${messageType === "success" ? "bg-green-100 text-green-700 border-green-300" : "bg-red-100 text-red-700 border-red-300"}`}>
@@ -107,7 +109,7 @@ const Register = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-900 text-white py-2 rounded-lg font-semibold text-base hover:bg-blue-800 transition-colors shadow-md mt-2"
+                    className="w-full bg-blue-900 text-white py-2 md:py-3 rounded-lg font-semibold text-sm md:text-base hover:bg-blue-800 transition-colors shadow-md mt-2"
                 >
                     Create Account
                 </button>
