@@ -3,17 +3,57 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/register";
-import Home from "./pages/home/home";
 import { useAuth } from "./context/AuthContext";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard"
+import UserDashboard from "./pages/UserDashboard/UserDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
-  const { token } = useAuth();
+  const { token, role } = useAuth();
 
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/login" element={!token ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/" element={token ? <Home /> : <Navigate to="/login" />} />
+
+      {/* Protected Routes */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute requiredRole="USER">
+            <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/"
+        element={
+          token ? (
+            role === "ADMIN" ? (
+              <Navigate to="/admin" />
+            ) : (
+              <Navigate to="/user" />
+            )
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+
+      {/* Optional Unauthorized & 404 Pages */}
+      <Route path="/unauthorized" element={<p>Unauthorized Access</p>} />
+      <Route path="*" element={<p>404 - Page not found</p>} />
     </Routes>
   );
 }

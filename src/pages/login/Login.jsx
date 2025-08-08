@@ -15,10 +15,18 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+
         try {
             const res = await axios.post("/auth/login", { email, password });
-            login(res.data.token);
-            navigate("/");
+            const { token, role } = res.data;
+            login(token, role);
+            if (role === "ADMIN") {
+                navigate("/admin");
+            } else if (role === "USER") {
+                navigate("/user");
+            } else {
+                setError("Unknown role");
+            }
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");
         }
