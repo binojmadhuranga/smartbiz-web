@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Input = ({ label, type = 'text', name, value, onChange, placeholder, required = false, className = '', ...props }) => (
   <div className="flex flex-col w-full">
