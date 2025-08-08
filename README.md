@@ -1,12 +1,46 @@
-# React + Vite
+# SmartBiz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SmartBiz is a modern ERP-lite platform designed to help small and medium business owners efficiently manage their **sales, customers, inventory**, and **daily operations**. With built-in **AI features** for reporting, insights, and content generation, SmartBiz bridges the gap between simplicity and powerful business intelligence.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🔐 JWT Authentication (Register/Login)
+- 👥 Customer and User Management
+- 📦 Inventory Tracking
+- 💰 Sales Management
+- 📊 AI-Powered Reports & Insights
+- ✍️ AI Content Generator for Product Descriptions, Emails, etc.
+- 🌐 Web App (React.js)
+- 📱 Mobile App (React Native)
+- ☁️ Deployed on AWS EC2
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📦 Tech Stack
+
+### Backend
+- **Java + Spring Boot**
+- **MySQL** (Database)
+- **JWT** for stateless authentication
+- **OpenAI API** for AI features
+
+### Frontend
+- **Web:** React.js
+- **Mobile:** React Native
+
+### DevOps / Deployment
+- **AWS EC2**
+- **Nginx (optional)**
+- **PM2 or Docker** for backend process management
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/smartbiz.git
+cd smartbiz
