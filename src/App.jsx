@@ -1,8 +1,8 @@
 // src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/login/Login";
-import Register from "./pages/register/register";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/register";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard"
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
