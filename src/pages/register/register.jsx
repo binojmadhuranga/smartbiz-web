@@ -1,6 +1,6 @@
 // src/pages/register/Register.jsx
 import React, { useState } from "react";
-import Input from "../../components/Input";
+import Input from "../../common/components/Input/Input";
 import axios from "../../axiosConfig";
 import { useNavigate, Link } from "react-router-dom";
 
