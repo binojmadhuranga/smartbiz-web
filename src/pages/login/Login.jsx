@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "../../axiosConfig";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import Input from "../../components/Input";
+import Input from "../../common/components/Input/Input";
 
 const Login = () => {
     const [email, setEmail] = useState("");
