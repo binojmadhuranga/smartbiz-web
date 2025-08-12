@@ -41,6 +41,6 @@ SmartBiz is a modern ERP-lite platform designed to help small and medium busines
 
 ### 1. Clone the Repository
 
-```bash
+bash
 git clone https://github.com/yourusername/smartbiz.git
 cd smartbiz
