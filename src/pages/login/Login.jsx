@@ -1,4 +1,3 @@
-// src/pages/login/Login.jsx
 import React, { useState } from "react";
 import axios from "../../axiosConfig";
 import { useNavigate, Link } from "react-router-dom";

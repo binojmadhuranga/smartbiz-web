@@ -11,11 +11,11 @@ function AdminDashboard() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login"); // Redirect to login page after logout
+    navigate("/login");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 ">
       <Navbar onLogout={handleLogout} />
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] bg-green-100">
         <h1 className="text-3xl font-bold text-green-800 mb-4">Admin Dashboard</h1>

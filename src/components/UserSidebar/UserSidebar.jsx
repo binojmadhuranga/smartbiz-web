@@ -62,24 +62,15 @@ const UserSidebar = ({ isOpen, onToggle }) => {
 
   return (
     <>
-      {/* Mobile overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={onToggle}
-        />
-      )}
       
-      {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full bg-gray-800 text-white z-50 transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full bg-gray-800 bg-opacity-90 lg:bg-opacity-100 text-white z-50 transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:h-screen
-        w-64
+        lg:translate-x-0 lg:static lg:h-[85vh] lg:bg-gray-800
+        w-64 flex flex-col overflow-hidden backdrop-blur-sm lg:backdrop-blur-none
       `}>
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-green-400">SmartBiz</h2>
+        <div className="flex items-center justify-between p-3 lg:p-4 border-b border-gray-700 flex-shrink-0">
+          <h2 className="text-base lg:text-lg font-bold text-green-400">Quick Navigate</h2>
           <button 
             onClick={onToggle}
             className="lg:hidden text-gray-400 hover:text-white"
@@ -90,32 +81,30 @@ const UserSidebar = ({ isOpen, onToggle }) => {
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="mt-6">
-          <ul className="space-y-2 px-4">
+        <nav className="flex-1 overflow-y-auto py-2 lg:py-3">
+          <ul className="space-y-0.5 lg:space-y-1 px-2 lg:px-3">
             {navItems.map((item) => (
               <li key={item.name}>
                 <NavLink
                   to={item.path}
                   onClick={() => window.innerWidth < 1024 && onToggle()}
                   className={({ isActive }) =>
-                    `flex items-center px-4 py-3 rounded-lg transition-colors duration-200 ${
+                    `flex items-center px-2 lg:px-3 py-2 lg:py-2.5 rounded-lg transition-colors duration-200 ${
                       isActive
                         ? 'bg-green-600 text-white'
                         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     }`
                   }
                 >
-                  <span className="mr-3">{item.icon}</span>
-                  <span className="font-medium">{item.name}</span>
+                  <span className="mr-2 lg:mr-3">{item.icon}</span>
+                  <span className="font-medium text-xs lg:text-sm">{item.name}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700">
+        <div className="p-2 lg:p-3 border-t border-gray-700 flex-shrink-0">
           <div className="text-xs text-gray-400 text-center">
             SmartBiz Dashboard v1.0
           </div>

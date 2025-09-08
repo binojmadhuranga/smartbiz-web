@@ -1,4 +1,3 @@
-// src/pages/register/Register.jsx
 import React, { useState } from "react";
 import Input from "../../common/components/Input/Input";
 import axios from "../../axiosConfig";
