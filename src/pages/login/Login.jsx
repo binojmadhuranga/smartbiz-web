@@ -33,10 +33,10 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-green-300">
             <form onSubmit={handleSubmit} className="bg-white/90 p-6 md:p-10 lg:p-12 rounded-2xl shadow-2xl w-[95vw] sm:w-[85vw] md:w-full max-w-md md:max-w-lg lg:max-w-xl flex flex-col gap-4">
 
-                <h2 className="text-2xl md:text-3xl font-extrabold mb-4 text-center text-blue-900 tracking-tight"> SmartBiz</h2>
+                <h2 className="text-2xl md:text-3xl font-extrabold mb-4 text-center text-green-800 tracking-tight"> SmartBiz</h2>
                 <p className="text-center text-gray-500 mb-2">Welcome back! Please login to your account.</p>
                 {error && (
                     <div className="mb-2 px-4 py-2 rounded text-center bg-red-100 text-red-700 border border-red-300 animate-fade-in">
@@ -63,12 +63,12 @@ const Login = () => {
                 />
                 <button
                     type="submit"
-                    className="w-full bg-blue-900 text-white py-2 md:py-3 rounded-lg font-semibold text-base md:text-lg hover:bg-blue-800 transition-colors shadow-md"
+                    className="w-full bg-green-800 text-white py-2 md:py-3 rounded-lg font-semibold text-base md:text-lg hover:bg-green-700 transition-colors shadow-md"
                 >
                     Login
                 </button>
                 <div className="mt-4 text-center">
-                    <Link to="/register" className="text-blue-900 hover:underline">
+                    <Link to="/register" className="text-green-800 hover:underline">
                         Don't have an account? Register
                     </Link>
 
