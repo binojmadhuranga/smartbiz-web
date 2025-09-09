@@ -47,7 +47,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-1 sm:gap-2">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 ${avatarBg} rounded-full flex items-center justify-center bg-green-600`}>
+            <div className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 ${avatarBg} rounded-full flex items-center justify-center bg-blue-900`}>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 fill="none" 
@@ -63,7 +63,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
 
           <button
             onClick={handleLogoutClick}
-            className="bg-red-500 hover:bg-red-600 p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center "
+            className="bg-green-500 hover:bg-red-600 p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center "
             title="Sign Out"
           >
             <svg 

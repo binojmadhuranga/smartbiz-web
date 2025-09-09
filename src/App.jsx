@@ -1,10 +1,13 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login/Login";
-import Register from "./pages/Register/register";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard"
-import UserDashboard from "./pages/UserDashboard/UserDashboard";
+import DashboardLayout from "./pages/dashboard/DashboardLayout";
+import Overview from "./pages/dashboard/Overview";
+import Products from "./pages/dashboard/Products";
+import ProductForm from "./pages/dashboard/ProductForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -25,12 +28,27 @@ function App() {
       />
 
       <Route
-        path="/user"
+        path="/dashboard/*"
         element={
           <ProtectedRoute requiredRole="USER">
-            <UserDashboard />
+            <DashboardLayout />
           </ProtectedRoute>
         }
+      >
+        <Route index element={<Navigate to="/dashboard/overview" />} />
+        <Route path="overview" element={<Overview />} />
+        <Route path="products" element={<Products />} />
+        <Route path="products/new" element={<ProductForm />} />
+        <Route path="products/:id/edit" element={<ProductForm />} />
+        <Route path="customers" element={<div className="p-6">Customers - Coming Soon</div>} />
+        <Route path="employees" element={<div className="p-6">Employees - Coming Soon</div>} />
+        <Route path="sales" element={<div className="p-6">Sales - Coming Soon</div>} />
+        <Route path="reports" element={<div className="p-6">Reports - Coming Soon</div>} />
+      </Route>
+
+      <Route
+        path="/user"
+        element={<Navigate to="/dashboard" />}
       />
 
       <Route
@@ -40,7 +58,7 @@ function App() {
             role === "ADMIN" ? (
               <Navigate to="/admin" />
             ) : (
-              <Navigate to="/user" />
+              <Navigate to="/dashboard" />
             )
           ) : (
             <Navigate to="/login" />
