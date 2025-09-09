@@ -49,3 +49,13 @@ export const deleteProduct = async (id) => {
     throw new Error(error.response?.data?.message || 'Failed to delete product');
   }
 };
+
+// Search products by name
+export const searchProductsByName = async (name) => {
+  try {
+    const response = await axios.get(`/items/search?name=${encodeURIComponent(name)}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to search products');
+  }
+};

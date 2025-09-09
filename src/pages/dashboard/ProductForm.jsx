@@ -9,7 +9,10 @@ const ProductForm = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    description: ''
+    description: '',
+    quantity: '',
+    unitBuyingPrice: '',
+    unitSellingPrice: ''
   });
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditMode);
@@ -29,7 +32,10 @@ const ProductForm = () => {
       const product = await getProductById(id);
       setFormData({
         name: product.name || '',
-        description: product.description || ''
+        description: product.description || '',
+        quantity: product.quantity || '',
+        unitBuyingPrice: product.unitBuyingPrice || '',
+        unitSellingPrice: product.unitSellingPrice || ''
       });
     } catch (err) {
       setError(err.message);
@@ -49,8 +55,29 @@ const ProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.name.trim()) {
       setError('Product name is required');
+      return;
+    }
+
+    if (!formData.quantity || formData.quantity <= 0) {
+      setError('Quantity must be a positive number');
+      return;
+    }
+
+    if (!formData.unitBuyingPrice || formData.unitBuyingPrice <= 0) {
+      setError('Unit buying price must be a positive number');
+      return;
+    }
+
+    if (!formData.unitSellingPrice || formData.unitSellingPrice <= 0) {
+      setError('Unit selling price must be a positive number');
+      return;
+    }
+
+    if (parseFloat(formData.unitSellingPrice) <= parseFloat(formData.unitBuyingPrice)) {
+      setError('Selling price should be higher than buying price');
       return;
     }
 
@@ -58,10 +85,18 @@ const ProductForm = () => {
       setLoading(true);
       setError('');
 
+      // Prepare data with proper number formatting
+      const productData = {
+        ...formData,
+        quantity: parseInt(formData.quantity),
+        unitBuyingPrice: parseFloat(formData.unitBuyingPrice),
+        unitSellingPrice: parseFloat(formData.unitSellingPrice)
+      };
+
       if (isEditMode) {
-        await updateProduct(id, formData);
+        await updateProduct(id, productData);
       } else {
-        await createProduct(formData);
+        await createProduct(productData);
       }
 
       navigate('/dashboard/products');
@@ -151,6 +186,62 @@ const ProductForm = () => {
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="Enter product description (optional)"
+            />
+          </div>
+
+          {/* Quantity */}
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+              Quantity *
+            </label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleInputChange}
+              required
+              min="1"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Enter quantity"
+            />
+          </div>
+
+          {/* Unit Buying Price */}
+          <div>
+            <label htmlFor="unitBuyingPrice" className="block text-sm font-medium text-gray-700 mb-2">
+              Unit Buying Price ($) *
+            </label>
+            <input
+              type="number"
+              id="unitBuyingPrice"
+              name="unitBuyingPrice"
+              value={formData.unitBuyingPrice}
+              onChange={handleInputChange}
+              required
+              min="0.01"
+              step="0.01"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Enter unit buying price"
+            />
+          </div>
+
+          {/* Unit Selling Price */}
+          <div>
+            <label htmlFor="unitSellingPrice" className="block text-sm font-medium text-gray-700 mb-2">
+              Unit Selling Price ($) *
+            </label>
+            <input
+              type="number"
+              id="unitSellingPrice"
+              name="unitSellingPrice"
+              value={formData.unitSellingPrice}
+              onChange={handleInputChange}
+              required
+              min="0.01"
+              step="0.01"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Enter unit selling price"
             />
           </div>
 
