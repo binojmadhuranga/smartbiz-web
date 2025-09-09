@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
@@ -13,11 +12,9 @@ function App() {
 
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/login" element={!token ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Protected Routes */}
       <Route
         path="/admin"
         element={
@@ -51,7 +48,6 @@ function App() {
         }
       />
 
-      {/* Optional Unauthorized & 404 Pages */}
       <Route path="/unauthorized" element={<p>Unauthorized Access</p>} />
       <Route path="*" element={<p>404 - Page not found</p>} />
     </Routes>

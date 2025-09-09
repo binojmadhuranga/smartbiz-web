@@ -10,7 +10,7 @@ const Input = ({ label, type = 'text', name, value, onChange, placeholder, requi
       onChange={onChange}
       placeholder={placeholder}
       required={required}
-      className={`py-2 px-3 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-sm ${className}`}
+      className={`py-2 px-3 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-sm ${className}`}
       {...props}
     />
   </div>
