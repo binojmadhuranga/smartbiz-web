@@ -35,7 +35,7 @@ const Products = () => {
     try {
       setDeleteLoading(id);
       await deleteProduct(id);
-      setProducts(products.filter(product => product.id !== id));
+      setProducts(products.filter(product => product.itemId !== id));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -125,10 +125,10 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                {products.map((product, index) => (
+                  <tr key={product.itemId || `product-${index}`} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      #{product.id}
+                      {product.itemId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {product.name}
@@ -139,17 +139,17 @@ const Products = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
                         <button
-                          onClick={() => handleEdit(product.id)}
+                          onClick={() => handleEdit(product.itemId)}
                           className="text-blue-600 hover:text-blue-900 font-medium"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(product.id, product.name)}
-                          disabled={deleteLoading === product.id}
+                          onClick={() => handleDelete(product.itemId, product.name)}
+                          disabled={deleteLoading === product.itemId}
                           className="text-red-600 hover:text-red-900 font-medium disabled:opacity-50"
                         >
-                          {deleteLoading === product.id ? 'Deleting...' : 'Delete'}
+                          {deleteLoading === product.itemId ? 'Deleting...' : 'Delete'}
                         </button>
                       </div>
                     </td>
