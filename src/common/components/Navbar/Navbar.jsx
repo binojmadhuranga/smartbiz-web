@@ -63,7 +63,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
 
           <button
             onClick={handleLogoutClick}
-            className="bg-green-500 hover:bg-red-600 p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center "
+            className="bg-green-700 hover:bg-red-600 p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center "
             title="Sign Out"
           >
             <svg 
