@@ -45,10 +45,10 @@ function App() {
         <Route path="suppliers" element={<Suppliers />} />
         <Route path="suppliers/new" element={<SupplierForm />} />
         <Route path="suppliers/:id/edit" element={<SupplierForm />} />
-        <Route path="customers" element={<div className="p-6">Customers - Coming Soon</div>} />
-        <Route path="employees" element={<div className="p-6">Employees - Coming Soon</div>} />
-        <Route path="sales" element={<div className="p-6">Sales - Coming Soon</div>} />
-        <Route path="reports" element={<div className="p-6">Reports - Coming Soon</div>} />
+        <Route path="customers" element={<div className="p-6 animate-fade-in">Customers - Coming Soon</div>} />
+        <Route path="employees" element={<div className="p-6 animate-fade-in">Employees - Coming Soon</div>} />
+        <Route path="sales" element={<div className="p-6 animate-fade-in">Sales - Coming Soon</div>} />
+        <Route path="reports" element={<div className="p-6 animate-fade-in">Reports - Coming Soon</div>} />
       </Route>
 
       <Route
