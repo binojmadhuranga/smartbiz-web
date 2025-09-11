@@ -17,12 +17,12 @@ const Login = () => {
 
         try {
             const res = await axios.post("/auth/login", { email, password });
-            const { token, role } = res.data;
-            login(token, role);
+            const { token, role, name } = res.data;
+            login(token, role, name);
             if (role === "ADMIN") {
                 navigate("/admin");
-            } else if (role === "USER") {
-                navigate("/user");
+            } else if (role === "USER" || role === "BUSINESS_USER") {
+                navigate("/dashboard");
             } else {
                 setError("Unknown role");
             }
