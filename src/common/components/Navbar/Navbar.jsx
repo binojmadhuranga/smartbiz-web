@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import logo from "../../../assets/logo.png";
 import LogoutCard from "../LogoutCard/LogoutCard";
+import { useAuth } from "../../../context/AuthContext";
 
 const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "default" }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const { name } = useAuth();
   
   const bgColor = variant === "dashboard" ? "bg-gray-800" : "bg-green-900";
   const avatarBg = variant === "dashboard" ? "bg-gray-600" : "bg-green-200";
@@ -59,6 +61,11 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
+            {name && (
+              <span className="hidden sm:block text-sm md:text-base lg:text-lg font-medium text-white">
+                Welcome, {name}
+              </span>
+            )}
           </div>
 
           <button
