@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useNavigation } from '../../context/NavigationContext';
 
 const UserSidebar = ({ isOpen, onToggle }) => {
+  const { startNavigation } = useNavigation();
+  
   const navItems = [
     {
       name: 'Overview',
@@ -96,7 +99,10 @@ const UserSidebar = ({ isOpen, onToggle }) => {
               <li key={item.name}>
                 <NavLink
                   to={item.path}
-                  onClick={() => window.innerWidth < 1024 && onToggle()}
+                  onClick={() => {
+                    startNavigation(item.name);
+                    if (window.innerWidth < 1024) onToggle();
+                  }}
                   className={({ isActive }) =>
                     `flex items-center px-2 lg:px-3 py-2 lg:py-2.5 rounded-lg transition-colors duration-200 ${
                       isActive

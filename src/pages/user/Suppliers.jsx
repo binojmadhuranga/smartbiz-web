@@ -109,7 +109,7 @@ const Suppliers = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 animate-fade-in">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
