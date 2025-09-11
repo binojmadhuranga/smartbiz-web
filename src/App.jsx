@@ -8,6 +8,8 @@ import DashboardLayout from "./pages/user/DashboardLayout";
 import Overview from "./pages/user/Overview";
 import Products from "./pages/user/Products";
 import ProductForm from "./pages/user/ProductForm";
+import Suppliers from "./pages/user/Suppliers";
+import SupplierForm from "./pages/user/SupplierForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -40,6 +42,9 @@ function App() {
         <Route path="products" element={<Products />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id/edit" element={<ProductForm />} />
+        <Route path="suppliers" element={<Suppliers />} />
+        <Route path="suppliers/new" element={<SupplierForm />} />
+        <Route path="suppliers/:id/edit" element={<SupplierForm />} />
         <Route path="customers" element={<div className="p-6">Customers - Coming Soon</div>} />
         <Route path="employees" element={<div className="p-6">Employees - Coming Soon</div>} />
         <Route path="sales" element={<div className="p-6">Sales - Coming Soon</div>} />
