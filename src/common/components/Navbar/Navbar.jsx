@@ -63,7 +63,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
             </div>
             {name && (
               <span className="hidden sm:block text-sm md:text-base lg:text-lg font-medium text-white">
-                Welcome, {name}
+                Hello, {name}
               </span>
             )}
           </div>

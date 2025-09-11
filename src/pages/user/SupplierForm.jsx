@@ -5,7 +5,7 @@ import { createSupplier, updateSupplier, getSupplierById } from '../../services/
 const SupplierForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const isEditMode = Boolean(id);
+  const isEditMode = id !== undefined && id !== null && id !== 'undefined' && id !== 'null';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,7 +34,7 @@ const SupplierForm = () => {
 
   // Fetch supplier data for edit mode
   useEffect(() => {
-    if (isEditMode) {
+  if (isEditMode) {
       fetchSupplier();
     }
   }, [id, isEditMode]);
@@ -43,6 +43,9 @@ const SupplierForm = () => {
     try {
       setFetchLoading(true);
       setError('');
+      if (!id || id === 'undefined' || id === 'null') {
+        throw new Error('Invalid supplier id');
+      }
       const supplier = await getSupplierById(id);
       setFormData({
         name: supplier.name || '',
