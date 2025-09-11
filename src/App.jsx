@@ -4,12 +4,12 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard"
-import DashboardLayout from "./pages/user/DashboardLayout";
-import Overview from "./pages/user/Overview";
-import Products from "./pages/user/Products";
-import ProductForm from "./pages/user/ProductForm";
-import Suppliers from "./pages/user/Suppliers";
-import SupplierForm from "./pages/user/SupplierForm";
+import DashboardLayout from "./pages/User/DashboardLayout";
+import Overview from "./pages/User/Overview";
+import Products from "./pages/User/Products";
+import ProductForm from "./pages/User/ProductForm";
+import Suppliers from "./pages/User/Suppliers";
+import SupplierForm from "./pages/User/SupplierForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
