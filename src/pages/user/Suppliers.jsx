@@ -9,6 +9,16 @@ const Suppliers = () => {
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+
+  // Compute a stable key for supplier items, even if some records lack an `id`
+  const supplierKey = (s, i) =>
+    s?.id ?? s?._id ?? s?.supplierId ?? s?.email ?? `${s?.name || 'supplier'}-${i}`;
+
+  // Normalize supplier object to ensure a canonical `id`
+  const normalizeSupplier = (s) => ({
+    ...s,
+    id: s?.id ?? s?._id ?? s?.supplierId,
+  });
   
   // Get current user ID from JWT token
   const getCurrentUserId = () => {
@@ -38,13 +48,14 @@ const Suppliers = () => {
     try {
       setLoading(true);
       setError('');
-      let data;
+  let data;
       if (searchTerm.trim()) {
         data = await searchSuppliersByName(userId, searchTerm);
       } else {
         data = await getSuppliersByUserId(userId);
       }
-      setSuppliers(data);
+  const normalized = Array.isArray(data) ? data.map(normalizeSupplier) : [];
+  setSuppliers(normalized);
     } catch (err) {
       setError(err.message);
       // If unauthorized, redirect to login
@@ -193,8 +204,8 @@ const Suppliers = () => {
                   </td>
                 </tr>
               ) : (
-                suppliers.map((supplier) => (
-                  <tr key={supplier.id} className="hover:bg-gray-50">
+                suppliers.map((supplier, index) => (
+                  <tr key={supplierKey(supplier, index)} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{supplier.name}</div>
                     </td>
@@ -237,8 +248,8 @@ const Suppliers = () => {
             {search ? 'No suppliers found matching your search.' : 'No suppliers found. Create your first supplier!'}
           </div>
         ) : (
-          suppliers.map((supplier) => (
-            <div key={supplier.id} className="bg-white rounded-lg shadow p-4">
+          suppliers.map((supplier, index) => (
+            <div key={supplierKey(supplier, index)} className="bg-white rounded-lg shadow p-4">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-medium text-gray-900 text-lg">{supplier.name}</h3>
                 <div className="flex space-x-2">
