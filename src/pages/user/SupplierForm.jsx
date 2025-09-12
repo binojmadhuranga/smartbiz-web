@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createSupplier, updateSupplier, getSupplierById } from '../../services/supplierService';
+import { getProductsByUserId } from '../../services/productService';
 
 const SupplierForm = () => {
   const navigate = useNavigate();
@@ -11,10 +12,13 @@ const SupplierForm = () => {
     name: '',
     email: '',
     phone: '',
-    address: ''
+    address: '',
+    itemIds: []
   });
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditMode);
+  const [itemsLoading, setItemsLoading] = useState(true);
   const [error, setError] = useState('');
 
   // Get current user ID from JWT token
@@ -32,14 +36,28 @@ const SupplierForm = () => {
 
   const userId = getCurrentUserId();
 
-  // Fetch supplier data for edit mode
+  // Fetch supplier data for edit mode and items
   useEffect(() => {
-  if (isEditMode) {
+    if (userId) {
+      fetchItems();
+    }
+    if (isEditMode) {
       fetchSupplier();
     }
-  }, [id, isEditMode]);
+  }, [id, isEditMode, userId]);
 
-  const fetchSupplier = async () => {
+  const fetchItems = async () => {
+    try {
+      setItemsLoading(true);
+      const itemsData = await getProductsByUserId(userId);
+      setItems(itemsData || []);
+    } catch (err) {
+      console.error('Failed to fetch items:', err);
+      setItems([]);
+    } finally {
+      setItemsLoading(false);
+    }
+  };  const fetchSupplier = async () => {
     try {
       setFetchLoading(true);
       setError('');
@@ -51,7 +69,8 @@ const SupplierForm = () => {
         name: supplier.name || '',
         email: supplier.email || '',
         phone: supplier.phone || '',
-        address: supplier.address || ''
+        address: supplier.address || '',
+        itemIds: supplier.itemIds || []
       });
     } catch (err) {
       setError(err.message);
@@ -70,6 +89,15 @@ const SupplierForm = () => {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleItemChange = (itemId) => {
+    setFormData(prev => ({
+      ...prev,
+      itemIds: prev.itemIds.includes(itemId)
+        ? prev.itemIds.filter(id => id !== itemId)
+        : [...prev.itemIds, itemId]
     }));
   };
 
@@ -97,7 +125,8 @@ const SupplierForm = () => {
         email: formData.email.trim() || null,
         phone: formData.phone.trim() || null,
         address: formData.address.trim() || null,
-        userId: userId
+        userId: userId,
+        itemIds: formData.itemIds
       };
 
       if (isEditMode) {
@@ -235,6 +264,47 @@ const SupplierForm = () => {
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
             />
+          </div>
+
+          {/* Items Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Items
+            </label>
+            {itemsLoading ? (
+              <div className="flex items-center justify-center py-4 border border-gray-300 rounded-lg">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                <span className="ml-2 text-sm text-gray-500">Loading items...</span>
+              </div>
+            ) : items.length === 0 ? (
+              <div className="p-4 border border-gray-300 rounded-lg text-center text-gray-500">
+                No items available. Create an item first.
+              </div>
+            ) : (
+              <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+                <div className="space-y-2">
+                  {items.map((item) => (
+                    <label key={item.id} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.itemIds.includes(item.id)}
+                        onChange={() => handleItemChange(item.id)}
+                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-3 text-sm text-gray-900">{item.name}</span>
+                      {item.description && (
+                        <span className="ml-2 text-sm text-gray-500">({item.description})</span>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            {formData.itemIds.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Selected {formData.itemIds.length} item{formData.itemIds.length !== 1 ? 's' : ''}
+              </div>
+            )}
           </div>
 
           {/* Contact Information Display */}

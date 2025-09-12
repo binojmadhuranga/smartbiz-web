@@ -9,7 +9,7 @@ import Overview from "./pages/User/Overview";
 import Products from "./pages/User/Products";
 import ProductForm from "./pages/User/ProductForm";
 import Suppliers from "./pages/User/Suppliers";
-import SupplierForm from "./pages/User/SupplierForm";
+import SupplierForm from "./pages/user/SupplierForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
