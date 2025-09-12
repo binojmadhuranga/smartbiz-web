@@ -36,6 +36,10 @@ const SupplierForm = () => {
 
   const userId = getCurrentUserId();
 
+  // Helpers for stable item identification and keys
+  const itemIdOf = (it) => it?.id ?? it?._id ?? it?.itemId;
+  const itemKey = (it, i) => itemIdOf(it) ?? it?.name ?? `item-${i}`;
+
   // Fetch supplier data for edit mode and items
   useEffect(() => {
     if (userId) {
@@ -50,7 +54,10 @@ const SupplierForm = () => {
     try {
       setItemsLoading(true);
       const itemsData = await getProductsByUserId(userId);
-      setItems(itemsData || []);
+      const normalized = Array.isArray(itemsData)
+        ? itemsData.map(it => ({ ...it, id: itemIdOf(it) }))
+        : [];
+      setItems(normalized);
     } catch (err) {
       console.error('Failed to fetch items:', err);
       setItems([]);
@@ -283,20 +290,25 @@ const SupplierForm = () => {
             ) : (
               <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
                 <div className="space-y-2">
-                  {items.map((item) => (
-                    <label key={item.id} className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.itemIds.includes(item.id)}
-                        onChange={() => handleItemChange(item.id)}
-                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-3 text-sm text-gray-900">{item.name}</span>
-                      {item.description && (
-                        <span className="ml-2 text-sm text-gray-500">({item.description})</span>
-                      )}
-                    </label>
-                  ))}
+                  {items.map((item, index) => {
+                    const iid = itemIdOf(item);
+                    const checked = iid != null && formData.itemIds.includes(iid);
+                    return (
+                      <label key={itemKey(item, index)} className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => iid != null && handleItemChange(iid)}
+                          disabled={iid == null}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
+                        />
+                        <span className="ml-3 text-sm text-gray-900">{item.name}</span>
+                        {item.description && (
+                          <span className="ml-2 text-sm text-gray-500">({item.description})</span>
+                        )}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             )}
