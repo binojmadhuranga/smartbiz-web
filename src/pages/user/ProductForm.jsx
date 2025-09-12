@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createProduct, updateProduct, getProductById } from '../../services/productService';
+import { getSuppliersByUserId } from '../../services/supplierService';
 
 const ProductForm = () => {
   const navigate = useNavigate();
@@ -12,18 +13,59 @@ const ProductForm = () => {
     description: '',
     quantity: '',
     unitBuyingPrice: '',
-    unitSellingPrice: ''
+    unitSellingPrice: '',
+    supplierIds: []
   });
+  const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(isEditMode);
+  const [suppliersLoading, setSuppliersLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch product data for edit mode
+  // Get current user ID from JWT token
+  const getCurrentUserId = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId || payload.id || payload.sub;
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return null;
+    }
+  };
+
+  const userId = getCurrentUserId();
+
+  // Helpers: canonical supplier id and stable key fallback
+  const supplierIdOf = (s) => s?.id ?? s?._id ?? s?.supplierId;
+  const supplierKey = (s, i) => supplierIdOf(s) ?? s?.email ?? `${s?.name || 'supplier'}-${i}`;
+
+  // Fetch product data for edit mode and suppliers
   useEffect(() => {
+    if (userId) {
+      fetchSuppliers();
+    }
     if (isEditMode) {
       fetchProduct();
     }
-  }, [id, isEditMode]);
+  }, [id, isEditMode, userId]);
+
+  const fetchSuppliers = async () => {
+    try {
+      setSuppliersLoading(true);
+      const suppliersData = await getSuppliersByUserId(userId);
+      const normalized = Array.isArray(suppliersData)
+        ? suppliersData.map((s) => ({ ...s, id: supplierIdOf(s) }))
+        : [];
+      setSuppliers(normalized);
+    } catch (err) {
+      console.error('Failed to fetch suppliers:', err);
+      setSuppliers([]);
+    } finally {
+      setSuppliersLoading(false);
+    }
+  };
 
   const fetchProduct = async () => {
     try {
@@ -35,7 +77,8 @@ const ProductForm = () => {
         description: product.description || '',
         quantity: product.quantity?.toString() || '',
         unitBuyingPrice: product.unitBuyingPrice?.toString() || '',
-        unitSellingPrice: product.unitSellingPrice?.toString() || ''
+        unitSellingPrice: product.unitSellingPrice?.toString() || '',
+        supplierIds: product.supplierIds || []
       });
     } catch (err) {
       setError(err.message);
@@ -54,6 +97,15 @@ const ProductForm = () => {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleSupplierChange = (supplierId) => {
+    setFormData(prev => ({
+      ...prev,
+      supplierIds: prev.supplierIds.includes(supplierId)
+        ? prev.supplierIds.filter(id => id !== supplierId)
+        : [...prev.supplierIds, supplierId]
     }));
   };
 
@@ -96,7 +148,8 @@ const ProductForm = () => {
         description: formData.description.trim(),
         quantity: parseInt(formData.quantity),
         unitBuyingPrice: parseFloat(formData.unitBuyingPrice),
-        unitSellingPrice: parseFloat(formData.unitSellingPrice)
+        unitSellingPrice: parseFloat(formData.unitSellingPrice),
+        supplierIds: formData.supplierIds
       };
 
       if (isEditMode) {
@@ -254,6 +307,52 @@ const ProductForm = () => {
                 required
               />
             </div>
+          </div>
+
+          {/* Suppliers Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Suppliers
+            </label>
+            {suppliersLoading ? (
+              <div className="flex items-center justify-center py-4 border border-gray-300 rounded-lg">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                <span className="ml-2 text-sm text-gray-500">Loading suppliers...</span>
+              </div>
+            ) : suppliers.length === 0 ? (
+              <div className="p-4 border border-gray-300 rounded-lg text-center text-gray-500">
+                No suppliers available. Create a supplier first.
+              </div>
+            ) : (
+              <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+                <div className="space-y-2">
+                  {suppliers.map((supplier, index) => {
+                    const sid = supplierIdOf(supplier);
+                    const checked = sid != null && formData.supplierIds.includes(sid);
+                    return (
+                      <label key={supplierKey(supplier, index)} className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => sid != null && handleSupplierChange(sid)}
+                          disabled={sid == null}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
+                        />
+                        <span className="ml-3 text-sm text-gray-900">{supplier.name}</span>
+                        {supplier.email && (
+                          <span className="ml-2 text-sm text-gray-500">({supplier.email})</span>
+                        )}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {formData.supplierIds.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Selected {formData.supplierIds.length} supplier{formData.supplierIds.length !== 1 ? 's' : ''}
+              </div>
+            )}
           </div>
 
           {/* Profit Margin Display */}

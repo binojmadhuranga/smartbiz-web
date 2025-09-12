@@ -3,13 +3,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
-import AdminDashboard from "./pages/AdminDashboard/AdminDashboard"
+import AdminDashboard from "./pages/Admin/AdminDashboard"
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
 import Products from "./pages/User/Products";
 import ProductForm from "./pages/User/ProductForm";
 import Suppliers from "./pages/User/Suppliers";
-import SupplierForm from "./pages/User/SupplierForm";
+import SupplierForm from "./pages/user/SupplierForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {

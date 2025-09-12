@@ -50,6 +50,16 @@ export const deleteProduct = async (id) => {
   }
 };
 
+// Get all products for a user
+export const getProductsByUserId = async (userId) => {
+  try {
+    const response = await axios.get(`/items/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products');
+  }
+};
+
 // Search products by name
 export const searchProductsByName = async (name) => {
   try {
