@@ -37,6 +37,10 @@ const ProductForm = () => {
 
   const userId = getCurrentUserId();
 
+  // Helpers: canonical supplier id and stable key fallback
+  const supplierIdOf = (s) => s?.id ?? s?._id ?? s?.supplierId;
+  const supplierKey = (s, i) => supplierIdOf(s) ?? s?.email ?? `${s?.name || 'supplier'}-${i}`;
+
   // Fetch product data for edit mode and suppliers
   useEffect(() => {
     if (userId) {
@@ -51,7 +55,10 @@ const ProductForm = () => {
     try {
       setSuppliersLoading(true);
       const suppliersData = await getSuppliersByUserId(userId);
-      setSuppliers(suppliersData || []);
+      const normalized = Array.isArray(suppliersData)
+        ? suppliersData.map((s) => ({ ...s, id: supplierIdOf(s) }))
+        : [];
+      setSuppliers(normalized);
     } catch (err) {
       console.error('Failed to fetch suppliers:', err);
       setSuppliers([]);
@@ -319,20 +326,25 @@ const ProductForm = () => {
             ) : (
               <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
                 <div className="space-y-2">
-                  {suppliers.map((supplier) => (
-                    <label key={supplier.id} className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.supplierIds.includes(supplier.id)}
-                        onChange={() => handleSupplierChange(supplier.id)}
-                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-3 text-sm text-gray-900">{supplier.name}</span>
-                      {supplier.email && (
-                        <span className="ml-2 text-sm text-gray-500">({supplier.email})</span>
-                      )}
-                    </label>
-                  ))}
+                  {suppliers.map((supplier, index) => {
+                    const sid = supplierIdOf(supplier);
+                    const checked = sid != null && formData.supplierIds.includes(sid);
+                    return (
+                      <label key={supplierKey(supplier, index)} className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => sid != null && handleSupplierChange(sid)}
+                          disabled={sid == null}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
+                        />
+                        <span className="ml-3 text-sm text-gray-900">{supplier.name}</span>
+                        {supplier.email && (
+                          <span className="ml-2 text-sm text-gray-500">({supplier.email})</span>
+                        )}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             )}
