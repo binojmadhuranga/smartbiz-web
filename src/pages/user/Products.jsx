@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct, searchProductsByName } from '../../services/productService';
+import { getAllProducts, deleteProduct, searchProductsByName, getProductSuppliers } from '../../services/productService';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -8,7 +8,14 @@ const Products = () => {
   const [error, setError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [search, setSearch] = useState('');
+  const [productSuppliers, setProductSuppliers] = useState({});
+  const [suppliersLoading, setSuppliersLoading] = useState({});
   const navigate = useNavigate();
+
+  // Helper function to get item ID from product
+  const getItemId = (product) => {
+    return product.itemId || product.id || product._id;
+  };
 
   // Fetch products on component mount
   useEffect(() => {
@@ -26,6 +33,14 @@ const Products = () => {
         data = await getAllProducts();
       }
       setProducts(data);
+      
+      // Fetch suppliers for each product
+      data.forEach(product => {
+        const itemId = getItemId(product);
+        if (itemId) {
+          fetchProductSuppliers(itemId);
+        }
+      });
     } catch (err) {
       setError(err.message);
       // If unauthorized, redirect to login
@@ -70,6 +85,23 @@ const Products = () => {
       }
     } finally {
       setDeleteLoading(null);
+    }
+  };
+
+  const fetchProductSuppliers = async (itemId) => {
+    // Don't fetch if already loaded or loading
+    if (productSuppliers[itemId] || suppliersLoading[itemId]) {
+      return;
+    }
+
+    try {
+      setSuppliersLoading(prev => ({ ...prev, [itemId]: true }));
+      const suppliers = await getProductSuppliers(itemId);
+      setProductSuppliers(prev => ({ ...prev, [itemId]: suppliers || [] }));
+    } catch (err) {
+      setProductSuppliers(prev => ({ ...prev, [itemId]: [] }));
+    } finally {
+      setSuppliersLoading(prev => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -168,6 +200,9 @@ const Products = () => {
                   Selling Price
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Suppliers
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -175,13 +210,13 @@ const Products = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
                     {search ? 'No products found matching your search.' : 'No products found. Create your first product!'}
                   </td>
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr key={product.itemId} className="hover:bg-gray-50">
+                  <tr key={getItemId(product)} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{product.name}</div>
                     </td>
@@ -197,19 +232,40 @@ const Products = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{formatPrice(product.unitSellingPrice)}</div>
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {suppliersLoading[getItemId(product)] ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-400"></div>
+                            <span className="text-gray-500">Loading...</span>
+                          </div>
+                        ) : productSuppliers[getItemId(product)] && productSuppliers[getItemId(product)].length > 0 ? (
+                          <div className="max-w-xs">
+                            {productSuppliers[getItemId(product)].map((supplier, index) => (
+                              <span key={supplier.id || index} className="inline-block">
+                                {supplier.name}
+                                {index < productSuppliers[getItemId(product)].length - 1 && ', '}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-gray-500 italic">No suppliers</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => handleEdit(product.itemId)}
+                        onClick={() => handleEdit(getItemId(product))}
                         className="text-green-600 hover:text-green-900 mr-3 transition-colors"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(product.itemId, product.name)}
-                        disabled={deleteLoading === product.itemId}
+                        onClick={() => handleDelete(getItemId(product), product.name)}
+                        disabled={deleteLoading === getItemId(product)}
                         className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
                       >
-                        {deleteLoading === product.itemId ? 'Deleting...' : 'Delete'}
+                        {deleteLoading === getItemId(product) ? 'Deleting...' : 'Delete'}
                       </button>
                     </td>
                   </tr>
@@ -228,12 +284,12 @@ const Products = () => {
           </div>
         ) : (
           products.map((product) => (
-            <div key={product.itemId} className="bg-white rounded-lg shadow p-4">
+            <div key={getItemId(product)} className="bg-white rounded-lg shadow p-4">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-medium text-gray-900 text-lg">{product.name}</h3>
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => handleEdit(product.itemId)}
+                    onClick={() => handleEdit(getItemId(product))}
                     className="text-green-600 hover:text-green-900 p-1"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,8 +297,8 @@ const Products = () => {
                     </svg>
                   </button>
                   <button
-                    onClick={() => handleDelete(product.itemId, product.name)}
-                    disabled={deleteLoading === product.itemId}
+                    onClick={() => handleDelete(getItemId(product), product.name)}
+                    disabled={deleteLoading === getItemId(product)}
                     className="text-red-600 hover:text-red-900 p-1 disabled:opacity-50"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,6 +326,23 @@ const Products = () => {
                     <span className="text-gray-500">Selling:</span>
                     <span className="ml-2 text-gray-900">{formatPrice(product.unitSellingPrice)}</span>
                   </div>
+                </div>
+                <div>
+                  <span className="text-gray-500">Suppliers:</span>
+                  <span className="ml-2 text-gray-900">
+                    {suppliersLoading[getItemId(product)] ? (
+                      <span className="text-gray-500 italic">Loading...</span>
+                    ) : productSuppliers[getItemId(product)] && productSuppliers[getItemId(product)].length > 0 ? (
+                      productSuppliers[getItemId(product)].map((supplier, index) => (
+                        <span key={supplier.id || index}>
+                          {supplier.name}
+                          {index < productSuppliers[getItemId(product)].length - 1 && ', '}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500 italic">No suppliers</span>
+                    )}
+                  </span>
                 </div>
               </div>
             </div>
