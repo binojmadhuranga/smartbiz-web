@@ -69,3 +69,30 @@ export const searchProductsByName = async (name) => {
     throw new Error(error.response?.data?.message || 'Failed to search products');
   }
 };
+
+// Get suppliers for a specific product
+export const getProductSuppliers = async (itemId) => {
+  try {
+    const response = await axios.get(`/items/${itemId}/suppliers`);
+    
+    // Handle the specific response format: array of supplier objects with name, supplierId, etc.
+    if (Array.isArray(response.data)) {
+      const suppliers = response.data.map(supplier => ({
+        id: supplier.supplierId,
+        name: supplier.name,
+        email: supplier.email,
+        phone: supplier.phone,
+        address: supplier.address
+      }));
+      return suppliers;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    // If 404, it might mean no suppliers exist for this item
+    if (error.response?.status === 404) {
+      return [];
+    }
+    throw new Error(error.response?.data?.message || 'Failed to fetch product suppliers');
+  }
+};
