@@ -6,9 +6,9 @@ import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
-import Products from "./pages/User/Products";
-import ProductForm from "./pages/User/ProductForm";
-import Suppliers from "./pages/User/Suppliers";
+import Products from "./pages/user/Products";
+import ProductForm from "./pages/user/ProductForm";
+import Suppliers from "./pages/user/Suppliers";
 import SupplierForm from "./pages/user/SupplierForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
