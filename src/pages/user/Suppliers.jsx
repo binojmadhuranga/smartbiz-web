@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSuppliersByUserId, deleteSupplier, searchSuppliersByName } from '../../services/supplierService';
+import { getSuppliersByUserId, deleteSupplier, searchSuppliersByName, getSupplierItems } from '../../services/supplierService';
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -8,6 +8,8 @@ const Suppliers = () => {
   const [error, setError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [search, setSearch] = useState('');
+  const [supplierItems, setSupplierItems] = useState({});
+  const [itemsLoading, setItemsLoading] = useState({});
   const navigate = useNavigate();
 
   // Compute a stable key for supplier items, even if some records lack an `id`
@@ -19,6 +21,11 @@ const Suppliers = () => {
     ...s,
     id: s?.id ?? s?._id ?? s?.supplierId,
   });
+
+  // Helper function to get supplier ID
+  const getSupplierId = (supplier) => {
+    return supplier.supplierId || supplier.id || supplier._id;
+  };
   
   // Get current user ID from JWT token
   const getCurrentUserId = () => {
@@ -42,6 +49,22 @@ const Suppliers = () => {
     }
   }, [userId]);
 
+  // Function to fetch items for a specific supplier
+  const fetchSupplierItems = async (supplierId) => {
+    if (!supplierId) return;
+    
+    try {
+      setItemsLoading(prev => ({ ...prev, [supplierId]: true }));
+      const items = await getSupplierItems(supplierId);
+      setSupplierItems(prev => ({ ...prev, [supplierId]: items }));
+    } catch (error) {
+      console.error('Error fetching supplier items:', error);
+      setSupplierItems(prev => ({ ...prev, [supplierId]: [] }));
+    } finally {
+      setItemsLoading(prev => ({ ...prev, [supplierId]: false }));
+    }
+  };
+
   const fetchSuppliers = useCallback(async (searchTerm = '') => {
     if (!userId) return;
     
@@ -56,6 +79,14 @@ const Suppliers = () => {
       }
   const normalized = Array.isArray(data) ? data.map(normalizeSupplier) : [];
   setSuppliers(normalized);
+      
+      // Fetch items for each supplier
+      for (const supplier of normalized) {
+        const supplierId = getSupplierId(supplier);
+        if (supplierId) {
+          fetchSupplierItems(supplierId);
+        }
+      }
     } catch (err) {
       setError(err.message);
       // If unauthorized, redirect to login
@@ -192,6 +223,9 @@ const Suppliers = () => {
                   Address
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Items
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -199,7 +233,7 @@ const Suppliers = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {suppliers.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                     {search ? 'No suppliers found matching your search.' : 'No suppliers found. Create your first supplier!'}
                   </td>
                 </tr>
@@ -217,6 +251,30 @@ const Suppliers = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900 max-w-xs truncate">{supplier.address || 'N/A'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {(() => {
+                          const supplierId = getSupplierId(supplier);
+                          const items = supplierItems[supplierId] || [];
+                          const loading = itemsLoading[supplierId];
+                          
+                          if (loading) {
+                            return 'Loading...';
+                          }
+                          
+                          if (items.length === 0) {
+                            return 'No items';
+                          }
+                          
+                          if (items.length === 1) {
+                            return items[0].name || items[0].itemName || items[0].productName || 'Unnamed Item';
+                          }
+                          
+                          const firstName = items[0].name || items[0].itemName || items[0].productName || 'Unnamed Item';
+                          return `${firstName} (+${items.length - 1} more)`;
+                        })()}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
@@ -285,6 +343,31 @@ const Suppliers = () => {
                 <div>
                   <span className="text-gray-500">Address:</span>
                   <span className="ml-2 text-gray-900">{supplier.address || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Items:</span>
+                  <span className="ml-2 text-gray-900">
+                    {(() => {
+                      const supplierId = getSupplierId(supplier);
+                      const items = supplierItems[supplierId] || [];
+                      const loading = itemsLoading[supplierId];
+                      
+                      if (loading) {
+                        return 'Loading...';
+                      }
+                      
+                      if (items.length === 0) {
+                        return 'No items';
+                      }
+                      
+                      if (items.length === 1) {
+                        return items[0].name || items[0].itemName || items[0].productName || 'Unnamed Item';
+                      }
+                      
+                      const firstName = items[0].name || items[0].itemName || items[0].productName || 'Unnamed Item';
+                      return `${firstName} (+${items.length - 1} more)`;
+                    })()}
+                  </span>
                 </div>
               </div>
             </div>
