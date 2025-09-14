@@ -10,6 +10,8 @@ import Products from "./pages/user/Products";
 import ProductForm from "./pages/user/ProductForm";
 import Suppliers from "./pages/user/Suppliers";
 import SupplierForm from "./pages/user/SupplierForm";
+import Employees from "./pages/user/Employees";
+import EmployeeForm from "./pages/user/EmployeeForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -46,7 +48,9 @@ function App() {
         <Route path="suppliers/new" element={<SupplierForm />} />
         <Route path="suppliers/:id/edit" element={<SupplierForm />} />
         <Route path="customers" element={<div className="p-6 animate-fade-in">Customers - Coming Soon</div>} />
-        <Route path="employees" element={<div className="p-6 animate-fade-in">Employees - Coming Soon</div>} />
+        <Route path="employees" element={<Employees />} />
+        <Route path="employees/new" element={<EmployeeForm />} />
+        <Route path="employees/:id/edit" element={<EmployeeForm />} />
         <Route path="sales" element={<div className="p-6 animate-fade-in">Sales - Coming Soon</div>} />
         <Route path="reports" element={<div className="p-6 animate-fade-in">Reports - Coming Soon</div>} />
       </Route>
