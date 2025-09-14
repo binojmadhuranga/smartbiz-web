@@ -17,7 +17,6 @@ SmartBiz is a modern ERP-lite platform designed to help small and medium busines
 - ☁️ Deployed on AWS EC2
 
 ---
-
 ## 📦 Tech Stack
 
 ### Backend
