@@ -55,14 +55,14 @@ const EmployeeForm = () => {
       // If unauthorized, redirect to login
       if (err.message.includes('401') || err.message.includes('Unauthorized')) {
         localStorage.removeItem('token');
-        window.location.href = '/login';
+        navigate('/login');
       }
     } finally {
       setFetchLoading(false);
     }
   };
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -70,37 +70,30 @@ const EmployeeForm = () => {
     }));
   };
 
-  const validateForm = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
     if (!formData.name.trim()) {
       setError('Employee name is required');
-      return false;
+      return;
     }
 
     if (!formData.email.trim()) {
       setError('Email is required');
-      return false;
+      return;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
-      return false;
+      return;
     }
 
     // Salary validation (if provided)
     if (formData.salary && (isNaN(formData.salary) || parseFloat(formData.salary) < 0)) {
       setError('Salary must be a valid positive number');
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
       return;
     }
 
@@ -113,10 +106,13 @@ const EmployeeForm = () => {
       setLoading(true);
       setError('');
 
+      // Prepare data with proper formatting
       const employeeData = {
-        ...formData,
-        userId: userId,
-        salary: formData.salary ? parseFloat(formData.salary) : null
+        name: formData.name.trim(),
+        role: formData.role.trim(),
+        email: formData.email.trim(),
+        salary: formData.salary ? parseFloat(formData.salary) : null,
+        userId: userId
       };
 
       if (isEditMode) {
@@ -125,13 +121,14 @@ const EmployeeForm = () => {
         await createEmployee(employeeData);
       }
 
+      // Navigate back to employees list
       navigate('/dashboard/employees');
     } catch (err) {
       setError(err.message);
       // If unauthorized, redirect to login
       if (err.message.includes('401') || err.message.includes('Unauthorized')) {
         localStorage.removeItem('token');
-        window.location.href = '/login';
+        navigate('/login');
       }
     } finally {
       setLoading(false);
@@ -145,125 +142,133 @@ const EmployeeForm = () => {
   if (fetchLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="p-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {isEditMode ? 'Edit Employee' : 'Add New Employee'}
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">
-          {isEditMode ? 'Update employee information' : 'Fill in the details to add a new employee'}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={handleCancel}
+            className="text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+          </h1>
+        </div>
+        <p className="text-gray-600">
+          {isEditMode ? 'Update the employee information below.' : 'Fill in the details to create a new employee.'}
         </p>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
       {/* Form */}
-      <div className="bg-white shadow-sm rounded-lg">
-        <form onSubmit={handleSubmit} className="space-y-6 py-6 px-4 sm:p-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
-            </div>
-          )}
+      <div className="bg-white rounded-lg shadow p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Employee Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Employee Name *
             </label>
             <input
               type="text"
-              name="name"
               id="name"
+              name="name"
               value={formData.name}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+              onChange={handleInputChange}
               placeholder="Enter employee name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
           {/* Role */}
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
               Role/Position
             </label>
             <input
               type="text"
-              name="role"
               id="role"
+              name="role"
               value={formData.role}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
-              placeholder="Enter employee role or position"
+              onChange={handleInputChange}
+              placeholder="Enter employee role or position (optional)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email Address *
             </label>
             <input
               type="email"
-              name="email"
               id="email"
+              name="email"
               value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+              onChange={handleInputChange}
               placeholder="Enter email address"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
           {/* Salary */}
           <div>
-            <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-2">
               Salary
             </label>
             <input
               type="number"
-              name="salary"
               id="salary"
+              name="salary"
               value={formData.salary}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
-              placeholder="Enter salary amount"
+              onChange={handleInputChange}
+              placeholder="Enter salary amount (optional)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               min="0"
               step="0.01"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-3 pt-6">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  {isEditMode ? 'Updating...' : 'Creating...'}
-                </>
-              ) : (
-                isEditMode ? 'Update Employee' : 'Create Employee'
+              {loading && (
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
               )}
+              {loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Employee' : 'Create Employee')}
             </button>
           </div>
         </form>
