@@ -1,6 +1,6 @@
 import axios from '../axiosConfig';
 
-// Get all employees for a user
+
 export const getAllEmployees = async (userId) => {
   try {
     const response = await axios.get('/employees', {
@@ -57,7 +57,7 @@ export const searchEmployeesByName = async (userId, searchTerm) => {
   try {
     const response = await axios.get('/employees/search', {
       params: { name: searchTerm },
-      data: { userId }
+      
     });
     return response.data;
   } catch (error) {
