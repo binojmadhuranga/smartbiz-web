@@ -24,12 +24,10 @@ const CustomerForm = () => {
   // Fetch customer data for editing
   useEffect(() => {
     if (isEdit) {
-      console.log('Edit mode - Customer ID from params:', id);
       const fetchCustomer = async () => {
         try {
           setLoading(true);
           const customer = await getCustomerById(id);
-          console.log('Fetched customer data:', customer);
           setFormData({
             name: customer.name || '',
             email: customer.email || '',
@@ -72,11 +70,8 @@ const CustomerForm = () => {
       setError('');
 
       if (isEdit) {
-        console.log('Submitting update for customer ID:', id);
-        console.log('Update data:', formData);
         await updateCustomer(id, formData);
       } else {
-        console.log('Creating new customer with data:', formData);
         await createCustomer(formData);
       }
 
