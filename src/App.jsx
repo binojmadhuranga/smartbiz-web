@@ -12,6 +12,8 @@ import Suppliers from "./pages/user/Suppliers";
 import SupplierForm from "./pages/user/SupplierForm";
 import Employees from "./pages/user/Employees";
 import EmployeeForm from "./pages/user/EmployeeForm";
+import Customers from "./pages/User/Customers";
+import CustomerForm from "./pages/User/CustomerForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -47,7 +49,9 @@ function App() {
         <Route path="suppliers" element={<Suppliers />} />
         <Route path="suppliers/new" element={<SupplierForm />} />
         <Route path="suppliers/:id/edit" element={<SupplierForm />} />
-        <Route path="customers" element={<div className="p-6 animate-fade-in">Customers - Coming Soon</div>} />
+        <Route path="customers" element={<Customers />} />
+        <Route path="customers/new" element={<CustomerForm />} />
+        <Route path="customers/:id/edit" element={<CustomerForm />} />
         <Route path="employees" element={<Employees />} />
         <Route path="employees/new" element={<EmployeeForm />} />
         <Route path="employees/:id/edit" element={<EmployeeForm />} />
