@@ -15,7 +15,17 @@ const Customers = () => {
       setLoading(true);
       setError('');
       const data = await getAllCustomers();
-      setCustomers(data);
+      console.log('Customer data received:', data);
+      console.log('First customer:', data[0]);
+      
+      // Normalize customer data to ensure consistent ID field
+      const normalizedCustomers = data.map(customer => ({
+        ...customer,
+        id: customer.id || customer._id || customer.customerId || customer.customer_id
+      }));
+      
+      console.log('Normalized customers:', normalizedCustomers[0]);
+      setCustomers(normalizedCustomers);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -34,7 +44,14 @@ const Customers = () => {
       setIsSearching(true);
       setError('');
       const data = await searchCustomersByName(term);
-      setCustomers(data);
+      
+      // Normalize customer data to ensure consistent ID field
+      const normalizedCustomers = data.map(customer => ({
+        ...customer,
+        id: customer.id || customer._id || customer.customerId || customer.customer_id
+      }));
+      
+      setCustomers(normalizedCustomers);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,6 +61,13 @@ const Customers = () => {
 
   // Handle delete customer
   const handleDelete = async (id) => {
+    console.log('Delete requested for customer ID:', id);
+    
+    if (!id || id === 'undefined') {
+      setError('Invalid customer ID for delete operation');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this customer?')) {
       try {
         await deleteCustomer(id);
