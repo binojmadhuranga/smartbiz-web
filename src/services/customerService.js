@@ -33,6 +33,9 @@ export const createCustomer = async (customerData) => {
 // Update a customer
 export const updateCustomer = async (customerId, customerData) => {
   try {
+    if (!customerId || customerId === 'undefined') {
+      throw new Error('Customer ID is required for update operation');
+    }
     const response = await axios.put(`/customers/${customerId}`, customerData);
     return response.data;
   } catch (error) {
@@ -43,6 +46,9 @@ export const updateCustomer = async (customerId, customerData) => {
 // Delete a customer
 export const deleteCustomer = async (customerId) => {
   try {
+    if (!customerId || customerId === 'undefined') {
+      throw new Error('Customer ID is required for delete operation');
+    }
     const response = await axios.delete(`/customers/${customerId}`);
     return response.data;
   } catch (error) {
