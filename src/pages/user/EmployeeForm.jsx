@@ -148,41 +148,42 @@ const EmployeeForm = () => {
   }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <button
-            onClick={handleCancel}
-            className="text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {isEditMode ? 'Edit Employee' : 'Add New Employee'}
-          </h1>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 xl:p-10">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 lg:mb-8 xl:mb-10">
+          <div className="flex items-center gap-2 lg:gap-3 mb-4 lg:mb-6">
+            <button
+              onClick={handleCancel}
+              className="text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">
+              {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+            </h1>
+          </div>
+          <p className="text-gray-600 text-sm lg:text-base xl:text-lg">
+            {isEditMode ? 'Update the employee information below.' : 'Fill in the details to create a new employee.'}
+          </p>
         </div>
-        <p className="text-gray-600">
-          {isEditMode ? 'Update the employee information below.' : 'Fill in the details to create a new employee.'}
-        </p>
-      </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 lg:mb-8 bg-red-100 border border-red-400 text-red-700 px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 rounded-lg lg:rounded-xl text-sm lg:text-base xl:text-lg">
+            {error}
+          </div>
+        )}
 
-      {/* Form */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form */}
+        <div className="bg-white rounded-lg lg:rounded-xl shadow-md lg:shadow-lg p-6 lg:p-8 xl:p-10">
+          <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8 xl:space-y-10">
 
           {/* Employee Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm lg:text-base xl:text-lg font-medium text-gray-700 mb-2 lg:mb-3">
               Employee Name *
             </label>
             <input
@@ -192,14 +193,14 @@ const EmployeeForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter employee name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 lg:px-4 xl:px-5 py-2 lg:py-3 xl:py-4 border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors text-sm lg:text-base xl:text-lg"
               required
             />
           </div>
 
           {/* Role */}
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="role" className="block text-sm lg:text-base xl:text-lg font-medium text-gray-700 mb-2 lg:mb-3">
               Role/Position
             </label>
             <input
@@ -209,13 +210,13 @@ const EmployeeForm = () => {
               value={formData.role}
               onChange={handleInputChange}
               placeholder="Enter employee role or position (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 lg:px-4 xl:px-5 py-2 lg:py-3 xl:py-4 border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors text-sm lg:text-base xl:text-lg"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm lg:text-base xl:text-lg font-medium text-gray-700 mb-2 lg:mb-3">
               Email Address *
             </label>
             <input
@@ -225,14 +226,14 @@ const EmployeeForm = () => {
               value={formData.email}
               onChange={handleInputChange}
               placeholder="Enter email address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 lg:px-4 xl:px-5 py-2 lg:py-3 xl:py-4 border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors text-sm lg:text-base xl:text-lg"
               required
             />
           </div>
 
           {/* Salary */}
           <div>
-            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="salary" className="block text-sm lg:text-base xl:text-lg font-medium text-gray-700 mb-2 lg:mb-3">
               Salary
             </label>
             <input
@@ -242,28 +243,28 @@ const EmployeeForm = () => {
               value={formData.salary}
               onChange={handleInputChange}
               placeholder="Enter salary amount (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 lg:px-4 xl:px-5 py-2 lg:py-3 xl:py-4 border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors text-sm lg:text-base xl:text-lg"
               min="0"
               step="0.01"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 pt-6 lg:pt-8 xl:pt-10 border-t border-gray-200">
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-6 lg:px-8 xl:px-10 py-3 lg:py-4 xl:py-5 border border-gray-300 text-gray-700 rounded-lg lg:rounded-xl hover:bg-gray-50 transition-colors font-medium text-sm lg:text-base xl:text-lg"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-6 lg:px-8 xl:px-10 py-3 lg:py-4 xl:py-5 bg-green-600 text-white rounded-lg lg:rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm lg:text-base xl:text-lg"
             >
               {loading && (
-                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4 lg:h-5 lg:w-5 xl:h-6 xl:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -272,6 +273,7 @@ const EmployeeForm = () => {
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );
