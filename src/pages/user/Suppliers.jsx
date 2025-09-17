@@ -145,24 +145,24 @@ const Suppliers = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 lg:h-16 lg:w-16 border-b-2 border-green-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 animate-fade-in">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 lg:gap-6 mb-6 lg:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Suppliers</h1>
-          <p className="text-gray-600">Manage your supplier database</p>
+          <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">Suppliers</h1>
+          <p className="text-gray-600 text-sm lg:text-base xl:text-lg mt-1 lg:mt-2">Manage your supplier database</p>
         </div>
         <Link
           to="/dashboard/suppliers/new"
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 lg:px-6 xl:px-8 py-2 lg:py-3 xl:py-4 rounded-lg lg:rounded-xl font-medium flex items-center gap-2 lg:gap-3 transition-colors text-sm lg:text-base xl:text-lg"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Add Supplier
@@ -170,10 +170,10 @@ const Suppliers = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="mb-6 lg:mb-8">
+        <div className="relative max-w-md lg:max-w-lg xl:max-w-xl">
+          <div className="absolute inset-y-0 left-0 pl-3 lg:pl-4 xl:pl-5 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 lg:h-6 lg:w-6 xl:h-7 xl:w-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
@@ -182,14 +182,14 @@ const Suppliers = () => {
             placeholder="Search by supplier name..."
             value={search}
             onChange={handleSearchChange}
-            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+            className="w-full pl-10 lg:pl-12 xl:pl-14 pr-10 lg:pr-12 xl:pr-14 py-2 lg:py-3 xl:py-4 border border-gray-300 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors text-sm lg:text-base xl:text-lg"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              className="absolute inset-y-0 right-0 pr-3 lg:pr-4 xl:pr-5 flex items-center"
             >
-              <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 lg:h-6 lg:w-6 xl:h-7 xl:w-7 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -199,33 +199,33 @@ const Suppliers = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="mb-4 lg:mb-6 bg-red-100 border border-red-400 text-red-700 px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 rounded-lg lg:rounded-xl text-sm lg:text-base xl:text-lg">
           {error}
         </div>
       )}
 
       {/* Suppliers Table - Desktop */}
-      <div className="hidden md:block bg-white rounded-lg shadow">
+      <div className="hidden md:block bg-white rounded-lg lg:rounded-xl shadow-md lg:shadow-lg">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Address
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Items
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 lg:px-6 xl:px-8 py-3 lg:py-4 xl:py-5 text-left text-xs lg:text-sm xl:text-base font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -233,21 +233,21 @@ const Suppliers = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {suppliers.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-4 lg:px-6 xl:px-8 py-8 lg:py-12 xl:py-16 text-center text-gray-500 text-sm lg:text-base xl:text-lg">
                     {search ? 'No suppliers found matching your search.' : 'No suppliers found. Create your first supplier!'}
                   </td>
                 </tr>
               ) : (
                 suppliers.map((supplier, index) => (
-                  <tr key={supplierKey(supplier, index)} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{supplier.name}</div>
+                  <tr key={supplierKey(supplier, index)} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5 xl:py-6 whitespace-nowrap">
+                      <div className="text-sm lg:text-base xl:text-lg font-medium text-gray-900">{supplier.name}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{supplier.email || 'N/A'}</div>
+                    <td className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5 xl:py-6 whitespace-nowrap">
+                      <div className="text-sm lg:text-base xl:text-lg text-gray-900">{supplier.email || 'N/A'}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{supplier.phone || 'N/A'}</div>
+                    <td className="px-4 lg:px-6 xl:px-8 py-4 lg:py-5 xl:py-6 whitespace-nowrap">
+                      <div className="text-sm lg:text-base xl:text-lg text-gray-900">{supplier.phone || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900 max-w-xs truncate">{supplier.address || 'N/A'}</div>
