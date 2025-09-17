@@ -58,29 +58,9 @@ const CustomerForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
+    // Basic validation
     if (!formData.name.trim()) {
-      setError('Product name is required');
-      return;
-    }
-
-    if (!formData.quantity || isNaN(formData.quantity) || parseInt(formData.quantity) <= 0) {
-      setError('Quantity must be a positive number');
-      return;
-    }
-
-    if (!formData.unitBuyingPrice || isNaN(formData.unitBuyingPrice) || parseFloat(formData.unitBuyingPrice) <= 0) {
-      setError('Unit buying price must be a positive number');
-      return;
-    }
-
-    if (!formData.unitSellingPrice || isNaN(formData.unitSellingPrice) || parseFloat(formData.unitSellingPrice) <= 0) {
-      setError('Unit selling price must be a positive number');
-      return;
-    }
-
-    if (parseFloat(formData.unitSellingPrice) <= parseFloat(formData.unitBuyingPrice)) {
-      setError('Selling price should be higher than buying price');
+      setError('Customer name is required');
       return;
     }
 
@@ -88,41 +68,25 @@ const CustomerForm = () => {
       setLoading(true);
       setError('');
 
-      // Prepare data with proper number formatting
-      const productData = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        quantity: parseInt(formData.quantity),
-        unitBuyingPrice: parseFloat(formData.unitBuyingPrice),
-        unitSellingPrice: parseFloat(formData.unitSellingPrice),
-        supplierIds: formData.supplierIds
-      };
-
-      if (isEditMode) {
-        await updateProduct(id, productData);
+      if (isEdit) {
+        await updateCustomer(id, formData);
       } else {
-        await createProduct(productData);
+        await createCustomer(formData);
       }
 
-      // Navigate back to products list
-      navigate('/dashboard/products');
+      navigate('/dashboard/customers');
     } catch (err) {
       setError(err.message);
-      // If unauthorized, redirect to login
-      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate('/dashboard/products');
+    navigate('/dashboard/customers');
   };
 
-  if (fetchLoading) {
+  if (loading && isEdit) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
@@ -144,11 +108,11 @@ const CustomerForm = () => {
             </svg>
           </button>
           <h1 className="text-2xl font-bold text-gray-900">
-            {isEditMode ? 'Edit Product' : 'Add New Product'}
+            {isEdit ? 'Edit Customer' : 'Add New Customer'}
           </h1>
         </div>
         <p className="text-gray-600">
-          {isEditMode ? 'Update the product information below.' : 'Fill in the details to create a new product.'}
+          {isEdit ? 'Update the customer information below.' : 'Fill in the details to create a new customer.'}
         </p>
       </div>
 
@@ -162,10 +126,10 @@ const CustomerForm = () => {
       {/* Form */}
       <div className="bg-white rounded-lg shadow p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Product Name */}
+          {/* Customer Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Product Name *
+              Customer Name *
             </label>
             <input
               type="text"
@@ -173,170 +137,148 @@ const CustomerForm = () => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Enter product name"
+              placeholder="Enter customer name"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Enter product description (optional)"
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
-            />
+          {/* Contact Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="customer@example.com"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="(123) 456-7890"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              />
+            </div>
           </div>
 
-          {/* Quantity */}
+          {/* Address */}
           <div>
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
-              Quantity *
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+              Address
             </label>
             <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              value={formData.quantity}
+              type="text"
+              id="address"
+              name="address"
+              value={formData.address}
               onChange={handleInputChange}
-              placeholder="Enter quantity"
-              min="1"
-              step="1"
+              placeholder="Enter street address"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
-              required
             />
           </div>
 
-          {/* Pricing Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Unit Buying Price */}
+          {/* City, State, Zip */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label htmlFor="unitBuyingPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                Unit Buying Price ($) *
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                City
               </label>
               <input
-                type="number"
-                id="unitBuyingPrice"
-                name="unitBuyingPrice"
-                value={formData.unitBuyingPrice}
+                type="text"
+                id="city"
+                name="city"
+                value={formData.city}
                 onChange={handleInputChange}
-                placeholder="0.00"
-                min="0.01"
-                step="0.01"
+                placeholder="Enter city"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
-                required
               />
             </div>
 
-            {/* Unit Selling Price */}
             <div>
-              <label htmlFor="unitSellingPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                Unit Selling Price ($) *
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
+                State
               </label>
               <input
-                type="number"
-                id="unitSellingPrice"
-                name="unitSellingPrice"
-                value={formData.unitSellingPrice}
+                type="text"
+                id="state"
+                name="state"
+                value={formData.state}
                 onChange={handleInputChange}
-                placeholder="0.00"
-                min="0.01"
-                step="0.01"
+                placeholder="Enter state"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
-                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-2">
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="zipCode"
+                name="zipCode"
+                value={formData.zipCode}
+                onChange={handleInputChange}
+                placeholder="Enter zip code"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               />
             </div>
           </div>
 
-          {/* Suppliers Section */}
+          {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Suppliers
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+              Status
             </label>
-            {suppliersLoading ? (
-              <div className="flex items-center justify-center py-4 border border-gray-300 rounded-lg">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-                <span className="ml-2 text-sm text-gray-500">Loading suppliers...</span>
-              </div>
-            ) : suppliers.length === 0 ? (
-              <div className="p-4 border border-gray-300 rounded-lg text-center text-gray-500">
-                No suppliers available. Create a supplier first.
-              </div>
-            ) : (
-              <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
-                <div className="space-y-2">
-                  {suppliers.map((supplier, index) => {
-                    const sid = supplierIdOf(supplier);
-                    const checked = sid != null && formData.supplierIds.includes(sid);
-                    return (
-                      <label key={supplierKey(supplier, index)} className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => sid != null && handleSupplierChange(sid)}
-                          disabled={sid == null}
-                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
-                        />
-                        <span className="ml-3 text-sm text-gray-900">{supplier.name}</span>
-                        {supplier.email && (
-                          <span className="ml-2 text-sm text-gray-500">({supplier.email})</span>
-                        )}
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            {formData.supplierIds.length > 0 && (
-              <div className="mt-2 text-sm text-gray-600">
-                Selected {formData.supplierIds.length} supplier{formData.supplierIds.length !== 1 ? 's' : ''}
-              </div>
-            )}
+            <select
+              id="status"
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
           </div>
-
-          {/* Profit Margin Display */}
-          {formData.unitBuyingPrice && formData.unitSellingPrice && 
-           !isNaN(formData.unitBuyingPrice) && !isNaN(formData.unitSellingPrice) && 
-           parseFloat(formData.unitSellingPrice) > parseFloat(formData.unitBuyingPrice) && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-sm font-medium text-green-800">Profit Information</span>
-              </div>
-              <div className="mt-2 text-sm text-green-700">
-                <p>Profit per unit: ${(parseFloat(formData.unitSellingPrice) - parseFloat(formData.unitBuyingPrice)).toFixed(2)}</p>
-                <p>Profit margin: {(((parseFloat(formData.unitSellingPrice) - parseFloat(formData.unitBuyingPrice)) / parseFloat(formData.unitBuyingPrice)) * 100).toFixed(1)}%</p>
-              </div>
-            </div>
-          )}
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              {loading ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {isEdit ? 'Updating...' : 'Creating...'}
+                </div>
+              ) : (
+                isEdit ? 'Update Customer' : 'Create Customer'
               )}
-              {loading ? 'Saving...' : (isEditMode ? 'Update Product' : 'Create Product')}
             </button>
           </div>
         </form>
@@ -345,4 +287,4 @@ const CustomerForm = () => {
   );
 };
 
-export default ProductForm;
+export default CustomerForm;
