@@ -1,57 +1,111 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createCustomer, updateCustomer, getCustomerById } from '../../services/customerService';
+import { createProduct, updateProduct, getProductById } from '../../services/productService';
+import { getSuppliersByUserId } from '../../services/supplierService';
 
-const CustomerForm = () => {
+const ProductForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const isEdit = !!id;
+  const isEditMode = Boolean(id);
 
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    status: 'Active'
+    description: '',
+    quantity: '',
+    unitBuyingPrice: '',
+    unitSellingPrice: '',
+    supplierIds: []
   });
+  const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(isEditMode);
+  const [suppliersLoading, setSuppliersLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch customer data for editing
-  useEffect(() => {
-    if (isEdit) {
-      const fetchCustomer = async () => {
-        try {
-          setLoading(true);
-          const customer = await getCustomerById(id);
-          setFormData({
-            name: customer.name || '',
-            email: customer.email || '',
-            phone: customer.phone || '',
-            address: customer.address || '',
-            city: customer.city || '',
-            state: customer.state || '',
-            zipCode: customer.zipCode || '',
-            status: customer.status || 'Active'
-          });
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchCustomer();
+  // Get current user ID from JWT token
+  const getCurrentUserId = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId || payload.id || payload.sub;
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return null;
     }
-  }, [id, isEdit]);
+  };
+
+  const userId = getCurrentUserId();
+
+  // Helpers: canonical supplier id and stable key fallback
+  const supplierIdOf = (s) => s?.id ?? s?._id ?? s?.supplierId;
+  const supplierKey = (s, i) => supplierIdOf(s) ?? s?.email ?? `${s?.name || 'supplier'}-${i}`;
+
+  // Fetch product data for edit mode and suppliers
+  useEffect(() => {
+    if (userId) {
+      fetchSuppliers();
+    }
+    if (isEditMode) {
+      fetchProduct();
+    }
+  }, [id, isEditMode, userId]);
+
+  const fetchSuppliers = async () => {
+    try {
+      setSuppliersLoading(true);
+      const suppliersData = await getSuppliersByUserId(userId);
+      const normalized = Array.isArray(suppliersData)
+        ? suppliersData.map((s) => ({ ...s, id: supplierIdOf(s) }))
+        : [];
+      setSuppliers(normalized);
+    } catch (err) {
+      console.error('Failed to fetch suppliers:', err);
+      setSuppliers([]);
+    } finally {
+      setSuppliersLoading(false);
+    }
+  };
+
+  const fetchProduct = async () => {
+    try {
+      setFetchLoading(true);
+      setError('');
+      const product = await getProductById(id);
+      setFormData({
+        name: product.name || '',
+        description: product.description || '',
+        quantity: product.quantity?.toString() || '',
+        unitBuyingPrice: product.unitBuyingPrice?.toString() || '',
+        unitSellingPrice: product.unitSellingPrice?.toString() || '',
+        supplierIds: product.supplierIds || []
+      });
+    } catch (err) {
+      setError(err.message);
+      // If unauthorized, redirect to login
+      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    } finally {
+      setFetchLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleSupplierChange = (supplierId) => {
+    setFormData(prev => ({
+      ...prev,
+      supplierIds: prev.supplierIds.includes(supplierId)
+        ? prev.supplierIds.filter(id => id !== supplierId)
+        : [...prev.supplierIds, supplierId]
     }));
   };
 
