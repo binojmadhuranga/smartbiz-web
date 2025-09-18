@@ -51,7 +51,7 @@ const SupplierModal = ({ isOpen, onClose, onSuccess, supplier, userId }) => {
       setError('Supplier name is required');
       return;
     }
-
+    
     if (formData.email && !isValidEmail(formData.email)) {
       setError('Please enter a valid email address');
       return;
