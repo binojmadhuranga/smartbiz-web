@@ -79,7 +79,8 @@ const UserSidebar = ({ isOpen, onToggle }) => {
         fixed top-0 left-0 h-full bg-gray-800 bg-opacity-90 lg:bg-opacity-100 text-white z-50 transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:h-[85vh] lg:bg-gray-800
-        w-64 flex flex-col overflow-hidden backdrop-blur-sm lg:backdrop-blur-none
+        w-52 md:w-56 lg:w-64 flex flex-col overflow-hidden backdrop-blur-sm lg:backdrop-blur-none
+        lg:flex-shrink-0
       `}>
         <div className="flex items-center justify-between p-3 lg:p-4 border-b border-gray-700 flex-shrink-0">
           <h2 className="text-base lg:text-lg font-bold text-green-400">Quick Navigate</h2>

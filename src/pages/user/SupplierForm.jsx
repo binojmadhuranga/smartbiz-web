@@ -336,23 +336,27 @@ const SupplierForm = () => {
           )}
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              {loading ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {isEditMode ? 'Updating...' : 'Creating...'}
+                </div>
+              ) : (
+                isEditMode ? 'Update Supplier' : 'Create Supplier'
               )}
-              {loading ? 'Saving...' : (isEditMode ? 'Update Supplier' : 'Add Supplier')}
             </button>
           </div>
         </form>

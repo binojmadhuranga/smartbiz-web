@@ -33,9 +33,11 @@ const DashboardLayout = () => {
         <div className="flex">
           <UserSidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
           
-          <div className="flex-1 lg:ml-0">
-            <div className="lg:h-[85vh] md:h-[88vh] h-[90vh] overflow-y-auto">
-              <Outlet />
+          <div className="flex-1 lg:ml-0 min-w-0 lg:w-auto w-full lg:pl-0 pl-0">
+            <div className="lg:h-[85vh] md:h-[88vh] h-[90vh] overflow-y-auto overflow-x-hidden w-full">
+              <div className="w-full max-w-full">
+                <Outlet />
+              </div>
             </div>
           </div>
         </div>
