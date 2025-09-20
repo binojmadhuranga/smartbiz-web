@@ -4,7 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { NavigationProvider } from "../../context/NavigationContext";
 import Navbar from "../../common/components/Navbar/Navbar";
 import UserSidebar from "../../components/UserSidebar/UserSidebar";
-import NavigationLoader from "../../common/components/NavigationLoader/NavigationLoader";
+import NavigationLoader from "../../common/components/NavigationLoader";
+
 
 const DashboardLayout = () => {
   const { logout } = useAuth();
