@@ -6,14 +6,16 @@ import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
-import Products from "./pages/user/Products";
-import ProductForm from "./pages/user/ProductForm";
-import Suppliers from "./pages/user/Suppliers";
-import SupplierForm from "./pages/user/SupplierForm";
-import Employees from "./pages/user/Employees";
-import EmployeeForm from "./pages/user/EmployeeForm";
+import Products from "./pages/User/Products";
+import ProductForm from "./pages/User/ProductForm";
+import Suppliers from "./pages/User/Suppliers";
+import SupplierForm from "./pages/User/SupplierForm";
+import Employees from "./pages/User/Employees";
+import EmployeeForm from "./pages/User/EmployeeForm";
 import Customers from "./pages/User/Customers";
 import CustomerForm from "./pages/User/CustomerForm";
+import Sales from "./pages/User/Sales";
+import SalesForm from "./pages/User/SalesForm";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -55,7 +57,9 @@ function App() {
         <Route path="employees" element={<Employees />} />
         <Route path="employees/new" element={<EmployeeForm />} />
         <Route path="employees/:id/edit" element={<EmployeeForm />} />
-        <Route path="sales" element={<div className="p-6 animate-fade-in">Sales - Coming Soon</div>} />
+        <Route path="sales" element={<Sales />} />
+        <Route path="sales/new" element={<SalesForm />} />
+        <Route path="sales/:id/edit" element={<SalesForm />} />
         <Route path="reports" element={<div className="p-6 animate-fade-in">Reports - Coming Soon</div>} />
       </Route>
 
