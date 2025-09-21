@@ -1,4 +1,4 @@
-import axios from '../axiosConfig';
+import axios from '../common/axiosConfig';
 
 // Get all products
 export const getAllProducts = async () => {

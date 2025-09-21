@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createSupplier, updateSupplier } from '../../services/supplierService';
+import { createSupplier, updateSupplier } from '../../services/user/supplierService';
 
 const SupplierModal = ({ isOpen, onClose, onSuccess, supplier, userId }) => {
   const [formData, setFormData] = useState({

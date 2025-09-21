@@ -1,4 +1,4 @@
-import api from '../axiosConfig';
+import api from '../common/axiosConfig';
 
 const SALES_BASE_URL = '/sales';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllSales, deleteSale, searchSales } from '../../services/saleService';
+import { getAllSales, deleteSale, searchSales } from '../../services/user/saleService';
 import { useAuth } from '../../context/AuthContext';
 
 const Sales = () => {

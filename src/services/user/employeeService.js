@@ -1,4 +1,4 @@
-import axios from '../axiosConfig';
+import axios from '../common/axiosConfig';
 
 
 export const getAllEmployees = async (userId) => {
