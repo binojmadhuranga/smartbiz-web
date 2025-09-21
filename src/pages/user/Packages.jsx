@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getAvailablePlans, getUserPlan, requestProPlanUpgrade, getPlanDisplayInfo } from '../../services/packageService';
 
 const Packages = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [plans, setPlans] = useState([]);
   const [currentPlan, setCurrentPlan] = useState('NORMAL');
   const [loading, setLoading] = useState(true);
@@ -69,18 +69,23 @@ const Packages = () => {
       return;
     }
 
-    if (!user?.id) {
-      setError('User information not available. Please refresh the page.');
-      return;
-    }
-
     try {
       setSubmitting(true);
       setError('');
       setSuccess('');
       
-      await requestProPlanUpgrade(user.id, selectedFile);
-      setSuccess('Pro plan upgrade request submitted successfully! We will review your payment and update your plan within 24-48 hours.');
+      // Use the new API structure that reads userId from JWT
+      const result = await requestProPlanUpgrade(selectedFile);
+      
+      // Update current plan state
+      setCurrentPlan('PRO');
+      
+      // Update user in auth context if updateUser function is available
+      if (updateUser) {
+        updateUser({ plan: 'PRO', id: result.userId });
+      }
+      
+      setSuccess('Pro plan upgrade successful! Your plan has been updated.');
       setShowUploadModal(false);
       setSelectedFile(null);
       

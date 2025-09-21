@@ -2,39 +2,101 @@ import api from '../axiosConfig';
 
 const PACKAGE_BASE_URL = '/account';
 
-/**
- * Request Pro plan upgrade by submitting payment slip
- * @param {string|number} userId - User ID
+/*    // Return success response
+    return {
+      success: true,
+      userId: userId,
+      plan: 'PRO',
+      message: 'Plan upgraded successfully'
+    };
+  } catch (error) {
+    console.error('Error requesting Pro plan upgrade:', error);
+    throw error; // Re-throw the error from uploadPaymentSlip or updatePlanToPro
+  }
+};nt slip for plan upgrade
  * @param {File} paymentSlip - Payment slip file
- * @returns {Promise<Object>} Request submission response
+ * @returns {Promise<Object>} Upload response
  */
-export const requestProPlanUpgrade = async (userId, paymentSlip) => {
+export const uploadPaymentSlip = async (paymentSlip) => {
   try {
     const formData = new FormData();
-    formData.append('paymentSlip', paymentSlip);
-    formData.append('requestedPlan', 'PRO');
+    formData.append('file', paymentSlip);
 
-    const response = await api.post(`${PACKAGE_BASE_URL}/${userId}/plan-request`, formData, {
+    const response = await api.post(`${PACKAGE_BASE_URL}/payments`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
     return response.data;
   } catch (error) {
-    console.error('Error requesting Pro plan upgrade:', error);
+    console.error('Error uploading payment slip:', error);
     
     // Handle different error scenarios
     if (error.response?.status === 401) {
       throw new Error('Unauthorized access. Please log in again.');
     } else if (error.response?.status === 403) {
-      throw new Error('Insufficient permissions to request plan upgrade.');
+      throw new Error('Insufficient permissions to upload payment slip.');
+    } else if (error.response?.status === 404) {
+      throw new Error('Upload endpoint not found.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response?.data?.message || 'Invalid file format or request data.');
+    } else {
+      throw new Error(error.response?.data?.message || 'Failed to upload payment slip. Please try again.');
+    }
+  }
+};
+
+/**
+ * Update user plan to Pro
+ * @returns {Promise<number>} User ID
+ */
+export const updatePlanToPro = async () => {
+  try {
+    const response = await api.put(`${PACKAGE_BASE_URL}/plan`, {
+      plan: 'PRO'
+    });
+    return response.data; // Returns userId as number
+  } catch (error) {
+    console.error('Error updating plan:', error);
+    
+    // Handle different error scenarios
+    if (error.response?.status === 401) {
+      throw new Error('Unauthorized access. Please log in again.');
+    } else if (error.response?.status === 403) {
+      throw new Error('Insufficient permissions to update plan.');
     } else if (error.response?.status === 404) {
       throw new Error('User not found.');
     } else if (error.response?.status === 400) {
-      throw new Error(error.response?.data?.message || 'Invalid request data or file format.');
+      throw new Error(error.response?.data?.message || 'Invalid plan type or request data.');
     } else {
-      throw new Error(error.response?.data?.message || 'Failed to submit plan upgrade request. Please try again.');
+      throw new Error(error.response?.data?.message || 'Failed to update plan. Please try again.');
     }
+  }
+};
+
+/**
+ * Request Pro plan upgrade by uploading payment slip and updating plan
+ * @param {File} paymentSlip - Payment slip file
+ * @returns {Promise<Object>} Combined response with upload and plan update
+ */
+export const requestProPlanUpgrade = async (paymentSlip) => {
+  try {
+    // First upload the payment slip
+    await uploadPaymentSlip(paymentSlip);
+    
+    // Then update the plan
+    const userId = await updatePlanToPro();
+    
+    // Return success response
+    return {
+      success: true,
+      userId: userId,
+      plan: 'PRO',
+      message: 'Plan upgraded successfully'
+    };
+  } catch (error) {
+    console.error('Error requesting Pro plan upgrade:', error);
+    throw error; // Re-throw the error from uploadPaymentSlip or updatePlanToPro
   }
 };
 
@@ -134,6 +196,8 @@ export const getPlanDisplayInfo = (plan) => {
 };
 
 export default {
+  uploadPaymentSlip,
+  updatePlanToPro,
   requestProPlanUpgrade,
   getUserPlan,
   getAvailablePlans,
