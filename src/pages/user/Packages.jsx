@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getAvailablePlans, getUserPlan, upgradeToPro, downgradeToNormal, getPlanDisplayInfo } from '../../services/packageService';
+import { getAvailablePlans, getUserPlan, requestProPlanUpgrade, getPlanDisplayInfo } from '../../services/user/packageService';
 
 const Packages = () => {
   const { user, updateUser } = useAuth();
   const [plans, setPlans] = useState([]);
   const [currentPlan, setCurrentPlan] = useState('NORMAL');
   const [loading, setLoading] = useState(true);
-  const [upgrading, setUpgrading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -20,8 +22,8 @@ const Packages = () => {
       setLoading(true);
       setError('');
       
-      // Fetch available plans
-      const availablePlans = await getAvailablePlans();
+      // Get available plans (now synchronous)
+      const availablePlans = getAvailablePlans();
       setPlans(availablePlans);
       
       // Get current user plan
@@ -40,40 +42,72 @@ const Packages = () => {
     }
   };
 
-  const handlePlanUpgrade = async (targetPlan) => {
-    if (!user?.id) {
-      setError('User information not available. Please refresh the page.');
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type (images and PDFs)
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        setError('Please select a valid image file (JPG, PNG) or PDF');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File size must be less than 5MB');
+        return;
+      }
+      
+      setSelectedFile(file);
+      setError('');
+    }
+  };
+
+  const handleProPlanRequest = async () => {
+    if (!selectedFile) {
+      setError('Please select a payment slip to upload');
       return;
     }
 
     try {
-      setUpgrading(true);
+      setSubmitting(true);
       setError('');
       setSuccess('');
       
-      let updatedUser;
-      if (targetPlan === 'PRO') {
-        updatedUser = await upgradeToPro(user.id);
-        setSuccess('Successfully upgraded to Pro plan!');
-      } else {
-        updatedUser = await downgradeToNormal(user.id);
-        setSuccess('Successfully changed to Normal plan!');
-      }
+      // Use the new API structure that reads userId from JWT
+      const result = await requestProPlanUpgrade(selectedFile);
       
       // Update current plan state
-      setCurrentPlan(updatedUser.plan);
+      setCurrentPlan('PRO');
       
       // Update user in auth context if updateUser function is available
       if (updateUser) {
-        updateUser(updatedUser);
+        updateUser({ plan: 'PRO', id: result.userId });
       }
       
+      setSuccess('Pro plan upgrade successful! Your plan has been updated.');
+      setShowUploadModal(false);
+      setSelectedFile(null);
+      
     } catch (error) {
-      console.error('Error updating plan:', error);
-      setError(error.message || 'Failed to update plan. Please try again.');
+      console.error('Error requesting Pro plan:', error);
+      setError(error.message || 'Failed to submit Pro plan request. Please try again.');
     } finally {
-      setUpgrading(false);
+      setSubmitting(false);
     }
+  };
+
+  const openUploadModal = () => {
+    setShowUploadModal(true);
+    setError('');
+    setSuccess('');
+    setSelectedFile(null);
+  };
+
+  const closeUploadModal = () => {
+    setShowUploadModal(false);
+    setSelectedFile(null);
+    setError('');
   };
 
   const getPlanCard = (plan) => {
@@ -151,26 +185,19 @@ const Packages = () => {
               >
                 Current Plan
               </button>
+            ) : isPro ? (
+              <button
+                onClick={openUploadModal}
+                className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Request Pro Upgrade
+              </button>
             ) : (
               <button
-                onClick={() => handlePlanUpgrade(plan.id)}
-                disabled={upgrading}
-                className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
-                  isPro
-                    ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl'
-                    : 'bg-gray-600 hover:bg-gray-700 text-white'
-                } ${upgrading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled
+                className="w-full bg-gray-100 text-gray-500 py-3 px-6 rounded-lg font-semibold cursor-not-allowed"
               >
-                {upgrading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Updating...
-                  </div>
-                ) : (
-                  <>
-                    {plan.id === 'PRO' ? 'Upgrade to Pro' : 'Switch to Normal'}
-                  </>
-                )}
+                Downgrade Not Available
               </button>
             )}
           </div>
@@ -195,7 +222,7 @@ const Packages = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Plan</h1>
         <p className="text-gray-600 text-lg">
-          Select the perfect plan for your business needs. Upgrade or downgrade at any time.
+          Select the perfect plan for your business needs. Submit a payment slip to request Pro plan upgrade.
         </p>
         
         {/* Current Plan Display */}
@@ -239,26 +266,96 @@ const Packages = () => {
         {plans.map(plan => getPlanCard(plan))}
       </div>
 
+      {/* Payment Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Upload Payment Slip</h3>
+              <button
+                onClick={closeUploadModal}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-gray-600 mb-4">
+                Please upload your payment slip for Pro plan ($29.99/month). Accepted formats: JPG, PNG, PDF (max 5MB)
+              </p>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg,application/pdf"
+                  onChange={handleFileSelect}
+                  className="w-full"
+                />
+                {selectedFile && (
+                  <div className="mt-2 text-sm text-green-600">
+                    Selected: {selectedFile.name}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {error && (
+              <div className="mb-4 text-red-600 text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={closeUploadModal}
+                className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleProPlanRequest}
+                disabled={!selectedFile || submitting}
+                className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${
+                  !selectedFile || submitting
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-green-600 text-white hover:bg-green-700'
+                }`}
+              >
+                {submitting ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Submitting...
+                  </div>
+                ) : (
+                  'Submit Request'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Additional Information */}
       <div className="mt-12 bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Help Choosing?</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
-          <div>
-            <h4 className="font-medium text-gray-900 mb-2">Normal Plan is great for:</h4>
-            <ul className="space-y-1">
-              <li>• Small businesses just getting started</li>
-              <li>• Basic inventory management needs</li>
-              <li>• Limited customer base</li>
-            </ul>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Upgrade Process</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600">
+          <div className="text-center">
+            <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">1</div>
+            <h4 className="font-medium text-gray-900 mb-1">Make Payment</h4>
+            <p>Transfer $29.99 to our account and get payment receipt</p>
           </div>
-          <div>
-            <h4 className="font-medium text-gray-900 mb-2">Pro Plan is perfect for:</h4>
-            <ul className="space-y-1">
-              <li>• Growing businesses with complex needs</li>
-              <li>• Advanced reporting and analytics</li>
-              <li>• Multiple users and integrations</li>
-              <li>• Priority customer support</li>
-            </ul>
+          <div className="text-center">
+            <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">2</div>
+            <h4 className="font-medium text-gray-900 mb-1">Upload Receipt</h4>
+            <p>Upload your payment slip using the form above</p>
+          </div>
+          <div className="text-center">
+            <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">3</div>
+            <h4 className="font-medium text-gray-900 mb-1">Get Upgraded</h4>
+            <p>We'll review and activate your Pro plan within 24-48 hours</p>
           </div>
         </div>
       </div>

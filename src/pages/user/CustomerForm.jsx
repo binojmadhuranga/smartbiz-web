@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createCustomer, updateCustomer, getCustomerById } from '../../services/customerService';
+import { createCustomer, updateCustomer, getCustomerById } from '../../services/user/customerService';
 
 const CustomerForm = () => {
   const navigate = useNavigate();

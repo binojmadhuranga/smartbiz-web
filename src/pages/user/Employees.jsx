@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllEmployees, deleteEmployee, searchEmployeesByName } from '../../services/employeeService';
+import { getAllEmployees, deleteEmployee, searchEmployeesByName } from '../../services/user/employeeService';
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);

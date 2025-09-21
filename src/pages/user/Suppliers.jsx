@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSuppliersByUserId, deleteSupplier, searchSuppliersByName, getSupplierItems } from '../../services/supplierService';
+import { getSuppliersByUserId, deleteSupplier, searchSuppliersByName, getSupplierItems } from '../../services/user/supplierService';
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);

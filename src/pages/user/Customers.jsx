@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllCustomers, deleteCustomer, searchCustomersByName } from '../../services/customerService';
+import { getAllCustomers, deleteCustomer, searchCustomersByName } from '../../services/user/customerService';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);

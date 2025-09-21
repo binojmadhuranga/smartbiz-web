@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createSale, getSaleById, updateSale } from '../../services/saleService';
+import { createSale, getSaleById, updateSale } from '../../services/user/saleService';
 import { useAuth } from '../../context/AuthContext';
 
 const SalesForm = () => {
