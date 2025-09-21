@@ -1,4 +1,4 @@
-import api from '../axiosConfig';
+import api from '../common/axiosConfig';
 
 const PACKAGE_BASE_URL = '/account';
 

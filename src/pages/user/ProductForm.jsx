@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createProduct, updateProduct, getProductById } from '../../services/productService';
-import { getSuppliersByUserId } from '../../services/supplierService';
+import { createProduct, updateProduct, getProductById } from '../../services/user/productService';
+import { getSuppliersByUserId } from '../../services/user/supplierService';
 
 const ProductForm = () => {
   const navigate = useNavigate();

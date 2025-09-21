@@ -1,4 +1,4 @@
-import axios from '../axiosConfig';
+import axios from '../common/axiosConfig';
 
 // Get all customers for the current user
 export const getAllCustomers = async () => {

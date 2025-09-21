@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getAvailablePlans, getUserPlan, requestProPlanUpgrade, getPlanDisplayInfo } from '../../services/packageService';
+import { getAvailablePlans, getUserPlan, requestProPlanUpgrade, getPlanDisplayInfo } from '../../services/user/packageService';
 
 const Packages = () => {
   const { user, updateUser } = useAuth();

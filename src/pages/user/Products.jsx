@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct, searchProductsByName, getProductSuppliers } from '../../services/productService';
+import { getAllProducts, deleteProduct, searchProductsByName, getProductSuppliers } from '../../services/user/productService';
 
 const Products = () => {
   const [products, setProducts] = useState([]);

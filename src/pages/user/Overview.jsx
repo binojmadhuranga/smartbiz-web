@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboardStats } from "../../services/dashboardService";
+import { getDashboardStats } from "../../services/user/dashboardService";
 import { useAuth } from "../../context/AuthContext";
 
 const Overview = () => {

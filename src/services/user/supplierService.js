@@ -1,4 +1,4 @@
-import axios from '../axiosConfig';
+import axios from '../common/axiosConfig';
 
 // Get all suppliers for a user
 export const getSuppliersByUserId = async (userId) => {

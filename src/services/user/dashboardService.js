@@ -1,4 +1,4 @@
-import api from '../axiosConfig';
+import api from '../common/axiosConfig';
 
 const DASHBOARD_BASE_URL = '/dashboard';
 

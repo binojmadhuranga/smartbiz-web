@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createEmployee, updateEmployee, getEmployeeById } from '../../services/employeeService';
+import { createEmployee, updateEmployee, getEmployeeById } from '../../services/user/employeeService';
 
 const EmployeeForm = () => {
   const navigate = useNavigate();
