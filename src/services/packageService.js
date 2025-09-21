@@ -3,31 +3,37 @@ import api from '../axiosConfig';
 const PACKAGE_BASE_URL = '/account';
 
 /**
- * Update user plan (upgrade/downgrade)
+ * Request Pro plan upgrade by submitting payment slip
  * @param {string|number} userId - User ID
- * @param {string} plan - Plan type ("NORMAL" or "PRO")
- * @returns {Promise<Object>} Updated user data with new plan
+ * @param {File} paymentSlip - Payment slip file
+ * @returns {Promise<Object>} Request submission response
  */
-export const updateUserPlan = async (userId, plan) => {
+export const requestProPlanUpgrade = async (userId, paymentSlip) => {
   try {
-    const response = await api.put(`${PACKAGE_BASE_URL}/${userId}/plan`, {
-      plan: plan
+    const formData = new FormData();
+    formData.append('paymentSlip', paymentSlip);
+    formData.append('requestedPlan', 'PRO');
+
+    const response = await api.post(`${PACKAGE_BASE_URL}/${userId}/plan-request`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     });
     return response.data;
   } catch (error) {
-    console.error('Error updating user plan:', error);
+    console.error('Error requesting Pro plan upgrade:', error);
     
     // Handle different error scenarios
     if (error.response?.status === 401) {
       throw new Error('Unauthorized access. Please log in again.');
     } else if (error.response?.status === 403) {
-      throw new Error('Insufficient permissions to update plan.');
+      throw new Error('Insufficient permissions to request plan upgrade.');
     } else if (error.response?.status === 404) {
       throw new Error('User not found.');
     } else if (error.response?.status === 400) {
-      throw new Error(error.response?.data?.message || 'Invalid plan type or request data.');
+      throw new Error(error.response?.data?.message || 'Invalid request data or file format.');
     } else {
-      throw new Error(error.response?.data?.message || 'Failed to update plan. Please try again.');
+      throw new Error(error.response?.data?.message || 'Failed to submit plan upgrade request. Please try again.');
     }
   }
 };
@@ -60,66 +66,40 @@ export const getUserPlan = async (userId = null) => {
 
 /**
  * Get available package plans with features
- * @returns {Promise<Array>} Array of available plans with features
+ * @returns {Array} Array of available plans with features
  */
-export const getAvailablePlans = async () => {
-  try {
-    const response = await api.get(`${PACKAGE_BASE_URL}/plans`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching available plans:', error);
-    
-    // Return default plans if API is not available
-    return [
-      {
-        id: 'NORMAL',
-        name: 'Normal',
-        price: 0,
-        currency: 'USD',
-        features: [
-          'Basic dashboard access',
-          'Up to 50 products',
-          'Up to 25 customers',
-          'Basic reporting',
-          'Email support'
-        ]
-      },
-      {
-        id: 'PRO',
-        name: 'Pro',
-        price: 29.99,
-        currency: 'USD',
-        features: [
-          'Advanced dashboard access',
-          'Unlimited products',
-          'Unlimited customers',
-          'Advanced reporting & analytics',
-          'Priority support',
-          'API access',
-          'Custom integrations',
-          'Multi-user support'
-        ]
-      }
-    ];
-  }
-};
-
-/**
- * Upgrade user to Pro plan
- * @param {string|number} userId - User ID
- * @returns {Promise<Object>} Updated user data
- */
-export const upgradeToPro = async (userId) => {
-  return updateUserPlan(userId, 'PRO');
-};
-
-/**
- * Downgrade user to Normal plan
- * @param {string|number} userId - User ID
- * @returns {Promise<Object>} Updated user data
- */
-export const downgradeToNormal = async (userId) => {
-  return updateUserPlan(userId, 'NORMAL');
+export const getAvailablePlans = () => {
+  return [
+    {
+      id: 'NORMAL',
+      name: 'Normal',
+      price: 0,
+      currency: 'USD',
+      features: [
+        'Basic dashboard access',
+        'Up to 50 products',
+        'Up to 25 customers',
+        'Basic reporting',
+        'Email support'
+      ]
+    },
+    {
+      id: 'PRO',
+      name: 'Pro',
+      price: 29.99,
+      currency: 'USD',
+      features: [
+        'Advanced dashboard access',
+        'Unlimited products',
+        'Unlimited customers',
+        'Advanced reporting & analytics',
+        'Priority support',
+        'API access',
+        'Custom integrations',
+        'Multi-user support'
+      ]
+    }
+  ];
 };
 
 /**
@@ -154,11 +134,9 @@ export const getPlanDisplayInfo = (plan) => {
 };
 
 export default {
-  updateUserPlan,
+  requestProPlanUpgrade,
   getUserPlan,
   getAvailablePlans,
-  upgradeToPro,
-  downgradeToNormal,
   hasProFeatures,
   getPlanDisplayInfo
 };
