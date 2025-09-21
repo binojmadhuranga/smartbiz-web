@@ -7,16 +7,16 @@ const NavigationLoader = () => {
   if (!isNavigating) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-50 z-50 flex items-center justify-center transition-all duration-300">
-      <div className="flex flex-col items-center space-y-4">
-        {/* Simple Loading Spinner */}
-        <div className="w-12 h-12 border-3 border-green-200 rounded-full animate-spin border-t-green-600"></div>
-        
-        {/* Loading Text */}
-        <div className="text-center">
-          <h3 className="text-base font-medium text-gray-700">
-            Loading {currentSection}
-          </h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4">
+        <div className="flex items-center space-x-3">
+          <div className="animate-spin rounded-full md:h-12 md:w-12 border-b-2 border-green-600"></div>
+          <div>
+            <p className="text-lg font-semibold text-gray-900">Loading...</p>
+            {currentSection && (
+              <p className="text-sm text-gray-600">Navigating to {currentSection}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
