@@ -16,7 +16,7 @@ const AdminSidebar = ({ isOpen, onToggle }) => {
       ),
     },
     {
-      name: "Users",
+      name: "Manage Users",
       path: "/admin/users",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
