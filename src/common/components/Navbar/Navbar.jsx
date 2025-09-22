@@ -7,11 +7,30 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { name } = useAuth();
   
-  const bgColor = variant === "dashboard" ? "bg-gray-800" : "bg-green-900";
-  const avatarBg = variant === "dashboard" ? "bg-gray-600" : "bg-green-200";
-  const avatarIconColor = variant === "dashboard" ? "text-gray-300" : "text-green-800";
-  const menuButtonHover = variant === "dashboard" ? "hover:bg-gray-700" : "hover:bg-green-800";
-  const focusRing = variant === "dashboard" ? "focus:ring-gray-500" : "focus:ring-green-500";
+  const bgColor = variant === "dashboard" ? "bg-gray-800" : 
+                  variant === "admin" ? "bg-gradient-to-r from-gray-800 to-blue-200" : 
+                  "bg-green-900";
+  const avatarBg = variant === "dashboard" ? "bg-gray-600" : 
+                   variant === "admin" ? "bg-blue-100" : 
+                   "bg-green-200";
+  const avatarIconColor = variant === "dashboard" ? "text-gray-300" : 
+                          variant === "admin" ? "text-gray-700" : 
+                          "text-green-800";
+  const menuButtonHover = variant === "dashboard" ? "hover:bg-gray-700" : 
+                          variant === "admin" ? "hover:bg-gray-600" : 
+                          "hover:bg-green-800";
+  const focusRing = variant === "dashboard" ? "focus:ring-gray-500" : 
+                    variant === "admin" ? "focus:ring-blue-300" : 
+                    "focus:ring-green-500";
+  const logoutButtonBg = variant === "dashboard" ? "bg-gray-600" : 
+                         variant === "admin" ? "bg-blue-600" : 
+                         "bg-green-700";
+  const logoutButtonHover = variant === "dashboard" ? "hover:bg-red-600" : 
+                            variant === "admin" ? "hover:bg-red-500" : 
+                            "hover:bg-red-600";
+  const logoutIconColor = variant === "dashboard" ? "text-white" : 
+                          variant === "admin" ? "text-white" : 
+                          "text-white";
 
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
@@ -49,7 +68,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
           <div className="flex items-center gap-1 sm:gap-2">
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 ${avatarBg} rounded-full flex items-center justify-center bg-blue-900`}>
+            <div className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 ${avatarBg} rounded-full flex items-center justify-center`}>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 fill="none" 
@@ -70,7 +89,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
 
           <button
             onClick={handleLogoutClick}
-            className="bg-green-700 hover:bg-red-600 p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center "
+            className={`${logoutButtonBg} ${logoutButtonHover} p-2 sm:p-2.5 md:p-3 rounded-md transition-colors duration-200 flex items-center justify-center`}
             title="Sign Out"
           >
             <svg 
@@ -79,7 +98,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
               viewBox="0 0 24 24" 
               strokeWidth={2} 
               stroke="currentColor" 
-              className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5"
+              className={`w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 ${logoutIconColor}`}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
             </svg>
