@@ -5,6 +5,7 @@ import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import ManageUsers from "./pages/Admin/ManageUsers";
+import ManagePlans from "./pages/Admin/ManagePlans";
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
 import Products from "./pages/User/Products";
@@ -42,6 +43,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="ADMIN">
             <ManageUsers />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/manage-plans"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <ManagePlans />
           </ProtectedRoute>
         }
       />
