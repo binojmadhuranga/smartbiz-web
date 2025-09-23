@@ -240,8 +240,19 @@ const ManagePlans = () => {
               <div key={user.id} className="bg-white rounded-lg xs:rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* User Header */}
                 <div className="p-3 xs:p-4 border-b border-gray-100">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 min-w-0 pr-2">
+                  <div className="flex items-start gap-3">
+                    {/* Edit Button - Left Corner */}
+                    <button
+                      onClick={() => handleUpdatePlan(user)}
+                      className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors flex-shrink-0 mt-1"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    
+                    {/* User Info */}
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center mb-2">
                         <div className="w-8 h-8 xs:w-10 xs:h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm xs:text-base mr-3">
                           {user.name.charAt(0).toUpperCase()}
@@ -251,16 +262,6 @@ const ManagePlans = () => {
                           <p className="text-xs xs:text-sm text-gray-600">ID: {user.id}</p>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <button
-                        onClick={() => handleUpdatePlan(user)}
-                        className="p-1.5 xs:p-2 text-green-600 hover:bg-green-50 rounded-md xs:rounded-lg transition-colors"
-                      >
-                        <svg className="w-3.5 h-3.5 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
                     </div>
                   </div>
                 </div>

@@ -19,6 +19,7 @@ import CustomerForm from "./pages/User/CustomerForm";
 import Sales from "./pages/User/Sales";
 import SalesForm from "./pages/User/SalesForm";
 import Packages from "./pages/user/Packages";
+import ProfileManage from "./pages/User/ProfileManage";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
         <Route path="sales/new" element={<SalesForm />} />
         <Route path="sales/:id/edit" element={<SalesForm />} />
         <Route path="packages" element={<Packages />} />
+        <Route path="profile" element={<ProfileManage />} />
         <Route path="reports" element={<div className="p-6 animate-fade-in">Reports - Coming Soon</div>} />
       </Route>
 
