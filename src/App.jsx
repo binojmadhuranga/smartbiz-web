@@ -5,6 +5,7 @@ import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import ManageUsers from "./pages/Admin/ManageUsers";
+import ManagePlans from "./pages/Admin/ManagePlans";
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
 import Products from "./pages/User/Products";
@@ -18,6 +19,7 @@ import CustomerForm from "./pages/User/CustomerForm";
 import Sales from "./pages/User/Sales";
 import SalesForm from "./pages/User/SalesForm";
 import Packages from "./pages/user/Packages";
+import ProfileManage from "./pages/User/ProfileManage";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -42,6 +44,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="ADMIN">
             <ManageUsers />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/manage-plans"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <ManagePlans />
           </ProtectedRoute>
         }
       />
@@ -72,6 +83,7 @@ function App() {
         <Route path="sales/new" element={<SalesForm />} />
         <Route path="sales/:id/edit" element={<SalesForm />} />
         <Route path="packages" element={<Packages />} />
+        <Route path="profile" element={<ProfileManage />} />
         <Route path="reports" element={<div className="p-6 animate-fade-in">Reports - Coming Soon</div>} />
       </Route>
 
