@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllUsersWithPlans, updateUserPlan } from '../../services/admin/userPlanManage';
+import { getAllUsersWithPlans, updateUserPlan, downloadUserPaymentFile, getUserPaymentFileUrl } from '../../services/admin/userPlanManage';
 
 const ManagePlans = () => {
   const navigate = useNavigate();
@@ -12,6 +12,11 @@ const ManagePlans = () => {
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('NORMAL');
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [previewFileUrl, setPreviewFileUrl] = useState('');
+  const [previewFileType, setPreviewFileType] = useState('');
+  const [previewFileName, setPreviewFileName] = useState('');
+  const [downloading, setDownloading] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -56,6 +61,62 @@ const ManagePlans = () => {
     setShowPlanModal(false);
     setSelectedUser(null);
     setSelectedPlan('NORMAL');
+  };
+
+  const closePreviewModal = () => {
+    setShowPreviewModal(false);
+    setPreviewFileUrl('');
+    setPreviewFileType('');
+    setPreviewFileName('');
+    if (previewFileUrl) {
+      URL.revokeObjectURL(previewFileUrl);
+    }
+  };
+
+  const handleDownloadPaymentFile = async (user) => {
+    try {
+      setDownloading(user.id);
+      const fileData = await downloadUserPaymentFile(user.id);
+      
+      // Create download link
+      const blob = new Blob([fileData.data], { type: fileData.contentType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileData.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setSuccess(`Downloaded ${fileData.filename} for ${user.name}`);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(`Failed to download payment file for ${user.name}`);
+      console.error('Error downloading payment file:', err);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const handlePreviewPaymentFile = async (user) => {
+    try {
+      setDownloading(user.id);
+      const fileData = await getUserPaymentFileUrl(user.id);
+      
+      setPreviewFileUrl(fileData.url);
+      setPreviewFileType(fileData.contentType);
+      setPreviewFileName(fileData.filename);
+      setSelectedUser(user);
+      setShowPreviewModal(true);
+    } catch (err) {
+      setError(`Failed to preview payment file for ${user.name}`);
+      console.error('Error previewing payment file:', err);
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setDownloading(null);
+    }
   };
 
   const filteredUsers = (users || []).filter(user =>
@@ -204,14 +265,52 @@ const ManagePlans = () => {
                         </span>
                       </td>
                       <td className="px-4 xs:px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleUpdatePlan(user)}
-                          className="text-green-600 hover:text-green-900 p-1 hover:bg-green-50 rounded transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleUpdatePlan(user)}
+                            className="text-green-600 hover:text-green-900 p-1 hover:bg-green-50 rounded transition-colors"
+                            title="Edit Plan"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => handlePreviewPaymentFile(user)}
+                            disabled={downloading === user.id}
+                            className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+                            title="Preview Payment File"
+                          >
+                            {downloading === user.id ? (
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDownloadPaymentFile(user)}
+                            disabled={downloading === user.id}
+                            className="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded transition-colors disabled:opacity-50"
+                            title="Download Payment File"
+                          >
+                            {downloading === user.id ? (
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -240,21 +339,64 @@ const ManagePlans = () => {
               <div key={user.id} className="bg-white rounded-lg xs:rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* User Header */}
                 <div className="p-3 xs:p-4 border-b border-gray-100">
-                  <div className="flex items-start gap-3">
-                    {/* Edit Button - Left Corner */}
-                    <button
-                      onClick={() => handleUpdatePlan(user)}
-                      className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors flex-shrink-0 mt-1"
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </button>
+                  <div className="flex items-start justify-between">
+                    {/* Left Side - Action Buttons */}
+                    <div className="flex gap-2 flex-shrink-0">
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => handleUpdatePlan(user)}
+                        className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+                        title="Edit Plan"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      
+                      {/* Preview Button */}
+                      <button
+                        onClick={() => handlePreviewPaymentFile(user)}
+                        disabled={downloading === user.id}
+                        className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+                        title="Preview Payment File"
+                      >
+                        {downloading === user.id ? (
+                          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        ) : (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                      
+                      {/* Download Button */}
+                      <button
+                        onClick={() => handleDownloadPaymentFile(user)}
+                        disabled={downloading === user.id}
+                        className="p-1 text-indigo-600 hover:bg-indigo-50 rounded transition-colors disabled:opacity-50"
+                        title="Download Payment File"
+                      >
+                        {downloading === user.id ? (
+                          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 01 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        ) : (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                     
-                    {/* User Info */}
-                    <div className="flex-1 min-w-0">
+                    {/* Right Side - User Info */}
+                    <div className="flex-1 min-w-0 ml-3">
                       <div className="flex items-center mb-2">
-                        <div className="w-8 h-8 xs:w-10 xs:h-10  bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm xs:text-base mr-3">
+                        <div className="w-8 h-8 xs:w-10 xs:h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm xs:text-base mr-3">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -387,6 +529,89 @@ const ManagePlans = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* File Preview Modal */}
+        {showPreviewModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+              {/* Modal Header */}
+              <div className="flex justify-between items-center p-4 border-b border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    {selectedUser?.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Payment File Preview</h3>
+                    <p className="text-sm text-gray-600">{selectedUser?.name} - {previewFileName}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleDownloadPaymentFile(selectedUser)}
+                    className="inline-flex items-center px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download
+                  </button>
+                  <button
+                    onClick={closePreviewModal}
+                    className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-all duration-200"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-auto p-4">
+                {previewFileUrl && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {previewFileType.startsWith('image/') ? (
+                      <img 
+                        src={previewFileUrl} 
+                        alt={previewFileName}
+                        className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                        onError={() => {
+                          setError('Failed to load image preview');
+                          closePreviewModal();
+                        }}
+                      />
+                    ) : previewFileType === 'application/pdf' ? (
+                      <iframe 
+                        src={previewFileUrl}
+                        className="w-full h-[70vh] border border-gray-300 rounded-lg"
+                        title={previewFileName}
+                      />
+                    ) : (
+                      <div className="text-center p-8">
+                        <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Preview Not Available</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                          This file type ({previewFileType}) cannot be previewed in the browser.
+                        </p>
+                        <button
+                          onClick={() => handleDownloadPaymentFile(selectedUser)}
+                          className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Download File
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
