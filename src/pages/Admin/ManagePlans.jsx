@@ -254,7 +254,7 @@ const ManagePlans = () => {
                     {/* User Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center mb-2">
-                        <div className="w-8 h-8 xs:w-10 xs:h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm xs:text-base mr-3">
+                        <div className="w-8 h-8 xs:w-10 xs:h-10  bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm xs:text-base mr-3">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
