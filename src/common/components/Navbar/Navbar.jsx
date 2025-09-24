@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo.png";
 import LogoutCard from "../LogoutCard/LogoutCard";
 import { useAuth } from "../../../context/AuthContext";
@@ -6,6 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "default" }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { name } = useAuth();
+  const navigate = useNavigate();
   
   const bgColor = variant === "dashboard" ? "bg-gray-800" : 
                   variant === "admin" ? "bg-gradient-to-r from-gray-800 to-blue-200" : 
@@ -45,6 +47,10 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
     setShowLogoutModal(false);
   };
 
+  const handleProfileClick = () => {
+    navigate('/dashboard/profile');
+  };
+
   return (
     <nav className={`w-full ${bgColor} text-white shadow-lg`}>
       <div className="max-w-[100vw]  px-3 sm:px-4 md:px-6 lg:pl-1 flex items-center justify-between h-[10vh]  md:h-[12vh] lg:h-[15vh] ">
@@ -67,7 +73,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-          <div className="flex items-center gap-1 sm:gap-2">
+          <button onClick={handleProfileClick} className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity cursor-pointer">
             <div className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 ${avatarBg} rounded-full flex items-center justify-center`}>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -85,7 +91,7 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
                 Hello, {name}
               </span>
             )}
-          </div>
+          </button>
 
           <button
             onClick={handleLogoutClick}
