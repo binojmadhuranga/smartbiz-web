@@ -141,7 +141,7 @@ const Report = () => {
         {/* Report Card */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
+          <div className="bg-gradient-to-r from-green-600 to-green-400 px-6 py-4">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
