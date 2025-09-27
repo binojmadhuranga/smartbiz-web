@@ -127,7 +127,7 @@ const ManagePlans = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-full flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading user plans...</p>
@@ -137,24 +137,14 @@ const ManagePlans = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 xs:p-3 sm:p-6 lg:p-8">
+    <div className="min-h-full p-2 xs:p-3 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg xs:rounded-xl shadow-sm border border-gray-200 p-4 xs:p-6 mb-4 xs:mb-6">
           <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate('/admin')}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="text-xl xs:text-2xl lg:text-3xl font-bold text-gray-900">Manage Plans</h1>
-                <p className="text-sm xs:text-base text-gray-600 mt-1">Manage user subscription plans</p>
-              </div>
+            <div>
+              <h1 className="text-xl xs:text-2xl lg:text-3xl font-bold text-gray-900">Manage Plans</h1>
+              <p className="text-sm xs:text-base text-gray-600 mt-1">Manage user subscription plans</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-4 text-sm">
