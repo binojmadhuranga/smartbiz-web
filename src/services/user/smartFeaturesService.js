@@ -51,3 +51,30 @@ export const getUserPlan = async () => {
     throw error;
   }
 };
+
+// Get business suggestions from AI
+export const getBusinessSuggestions = async (filter = 'weekly') => {
+  try {
+    const response = await axiosInstance.get('/ai/suggestions', {
+      params: { filter }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching business suggestions:', error);
+    
+    let errorMessage = 'Failed to fetch business suggestions';
+    if (error.response?.status === 401) {
+      errorMessage = 'Unauthorized. Please login again.';
+    } else if (error.response?.status === 403) {
+      errorMessage = 'Access denied. PRO plan required for AI suggestions.';
+    } else if (error.response?.status === 404) {
+      errorMessage = 'AI suggestions service not available.';
+    } else if (error.response?.status === 429) {
+      errorMessage = 'Too many requests. Please try again later.';
+    } else if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    }
+    
+    throw new Error(errorMessage);
+  }
+};
