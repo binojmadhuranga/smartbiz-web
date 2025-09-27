@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { jsPDF } from 'jspdf';
 import { getBusinessSuggestions } from '../../services/user/smartFeaturesService';
 
 const Suggestions = ({ isOpen, onClose }) => {
@@ -7,6 +8,8 @@ const Suggestions = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('weekly');
+  const [isExporting, setIsExporting] = useState(false);
+  const suggestionsContentRef = useRef(null);
 
   const filterOptions = [
     { value: 'daily', label: 'Daily', icon: '📅' },
@@ -41,6 +44,461 @@ const Suggestions = ({ isOpen, onClose }) => {
 
   const handleRefresh = () => {
     fetchSuggestions();
+  };
+
+  // Export suggestions to PDF using autoTable
+  const handleExportToPDF = async () => {
+    if (!suggestions) {
+      alert('No suggestions to export');
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+
+      // Dynamic import of autoTable
+      await import('jspdf-autotable');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Check if autoTable is available
+      if (typeof pdf.autoTable !== 'function') {
+        throw new Error('autoTable not available, using fallback');
+      }
+
+      const currentDate = new Date();
+      const filterLabel = filterOptions.find(f => f.value === filter)?.label || 'Weekly';
+      
+      // Header with company branding
+      pdf.setFontSize(24);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(22, 101, 52); // Green color
+      pdf.text('🎯 SmartBiz AI Business Suggestions', 20, 25);
+      
+      // Subtitle
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(107, 114, 128); // Gray color
+      pdf.text(`${filterLabel} Insights Report`, 20, 35);
+      
+      // Date and time
+      pdf.setFontSize(10);
+      pdf.text(`Generated on: ${currentDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`, 20, 45);
+
+      // Horizontal line
+      pdf.setDrawColor(16, 185, 129);
+      pdf.setLineWidth(0.5);
+      pdf.line(20, 50, 190, 50);
+
+      let yPosition = 60;
+
+      // Process suggestions based on their structure
+      if (Array.isArray(suggestions)) {
+        // Create structured data for autoTable (summary with limited content)
+        const tableData = suggestions.map((suggestion, index) => {
+          const title = getSuggestionTitle(suggestion, index);
+          const content = formatSuggestionContentForPDF(suggestion, 150); // Limit for summary table
+          const category = getSuggestionCategory(suggestion) || 'General';
+          const impact = getSuggestionImpact(suggestion) || 'Medium';
+
+          return [
+            `${index + 1}`,
+            title,
+            category,
+            impact,
+            content
+          ];
+        });
+
+        // Summary table
+        pdf.autoTable({
+          startY: yPosition,
+          head: [['#', 'Suggestion Title', 'Category', 'Impact', 'Description']],
+          body: tableData,
+          theme: 'striped',
+          headStyles: {
+            fillColor: [16, 185, 129], // Green color
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 10
+          },
+          bodyStyles: {
+            fontSize: 9,
+            cellPadding: 3
+          },
+          columnStyles: {
+            0: { cellWidth: 15, halign: 'center' }, // Index
+            1: { cellWidth: 45 }, // Title
+            2: { cellWidth: 25 }, // Category
+            3: { cellWidth: 25 }, // Impact
+            4: { cellWidth: 70 } // Description
+          },
+          didDrawPage: (data) => {
+            // Add page number
+            pdf.setFontSize(8);
+            pdf.setTextColor(107, 114, 128);
+            pdf.text(
+              `Page ${pdf.internal.getNumberOfPages()}`,
+              pdf.internal.pageSize.width - 30,
+              pdf.internal.pageSize.height - 10
+            );
+          }
+        });
+
+        // Detailed suggestions section
+        yPosition = pdf.lastAutoTable.finalY + 20;
+
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(22, 101, 52);
+        pdf.text('Detailed Analysis', 20, yPosition);
+
+        yPosition += 10;
+
+        suggestions.forEach((suggestion, index) => {
+          // Check if we need a new page
+          if (yPosition > 250) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+
+          const title = getSuggestionTitle(suggestion, index);
+          const fullContent = formatSuggestionContentForPDF(suggestion); // Full content for detailed section
+          const category = getSuggestionCategory(suggestion);
+          const impact = getSuggestionImpact(suggestion);
+
+          // Create detailed section for each suggestion with full content
+          const detailData = [
+            ['Title', title],
+            ['Category', category || 'General'],
+            ['Impact Level', impact || 'Medium'],
+            ['Full Description', fullContent],
+          ];
+
+          pdf.autoTable({
+            startY: yPosition,
+            head: [[`Suggestion ${index + 1}`, '']],
+            body: detailData,
+            theme: 'grid',
+            headStyles: {
+              fillColor: [16, 185, 129],
+              textColor: [255, 255, 255],
+              fontStyle: 'bold',
+              fontSize: 12
+            },
+            bodyStyles: {
+              fontSize: 10,
+              cellPadding: 4,
+              valign: 'top',
+              lineColor: [200, 200, 200],
+              lineWidth: 0.1
+            },
+            columnStyles: {
+              0: { 
+                cellWidth: 40, 
+                fontStyle: 'bold', 
+                fillColor: [249, 250, 251],
+                halign: 'left',
+                valign: 'top'
+              },
+              1: { 
+                cellWidth: 130,
+                halign: 'left',
+                valign: 'top'
+              }
+            },
+            styles: {
+              overflow: 'linebreak',
+              cellWidth: 'wrap'
+            },
+            margin: { top: 10, right: 20, bottom: 10, left: 20 }
+          });
+
+          yPosition = pdf.lastAutoTable.finalY + 10;
+        });
+
+      } else if (typeof suggestions === 'object' && suggestions !== null) {
+        // Handle object-based suggestions
+        const entries = Object.entries(suggestions);
+        const tableData = entries.map(([key, value], index) => [
+          `${index + 1}`,
+          key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+          Array.isArray(value) ? value.join(', ') : value?.toString() || 'N/A'
+        ]);
+
+        pdf.autoTable({
+          startY: yPosition,
+          head: [['#', 'Aspect', 'Recommendation']],
+          body: tableData,
+          theme: 'striped',
+          headStyles: {
+            fillColor: [16, 185, 129],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+          },
+          columnStyles: {
+            0: { cellWidth: 20, halign: 'center' },
+            1: { cellWidth: 60 },
+            2: { cellWidth: 100 }
+          }
+        });
+
+      } else {
+        // Handle string-based suggestions
+        pdf.autoTable({
+          startY: yPosition,
+          head: [['AI Business Suggestion']],
+          body: [[suggestions?.toString() || 'No suggestion content available']],
+          theme: 'grid',
+          headStyles: {
+            fillColor: [16, 185, 129],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+          },
+          columnStyles: {
+            0: { cellWidth: 170 }
+          }
+        });
+      }
+
+      // Footer on last page
+      const pageCount = pdf.internal.getNumberOfPages();
+      pdf.setPage(pageCount);
+      
+      const footerY = pdf.internal.pageSize.height - 20;
+      pdf.setDrawColor(229, 231, 235);
+      pdf.line(20, footerY - 5, 190, footerY - 5);
+      
+      pdf.setFontSize(8);
+      pdf.setTextColor(107, 114, 128);
+      pdf.text('This report was generated by SmartBiz AI Analytics Platform', 20, footerY);
+      pdf.text(`© ${currentDate.getFullYear()} SmartBiz. All rights reserved.`, 20, footerY + 5);
+
+      // Save the PDF
+      const fileName = `SmartBiz_AI_Suggestions_${filterLabel}_${currentDate.toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+      
+      // Fallback to basic PDF export if autoTable fails
+      try {
+        setIsExporting(true); // Ensure loading state continues
+        await handleBasicPDFExport();
+      } catch (fallbackError) {
+        console.error('Fallback PDF export also failed:', fallbackError);
+        alert('Failed to export PDF. Please try again.');
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Fallback PDF export without autoTable
+  const handleBasicPDFExport = async () => {
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const currentDate = new Date();
+    const filterLabel = filterOptions.find(f => f.value === filter)?.label || 'Weekly';
+    
+    // Header
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(22, 101, 52);
+    pdf.text('SmartBiz AI Business Suggestions', 20, 25);
+    
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(107, 114, 128);
+    pdf.text(`${filterLabel} Insights Report - ${currentDate.toLocaleDateString()}`, 20, 35);
+    
+    // Line separator
+    pdf.setDrawColor(16, 185, 129);
+    pdf.setLineWidth(0.5);
+    pdf.line(20, 45, 190, 45);
+
+    let yPosition = 55;
+    const pageHeight = pdf.internal.pageSize.height;
+    const margin = 20;
+
+    // Process suggestions
+    if (Array.isArray(suggestions)) {
+      suggestions.forEach((suggestion, index) => {
+        // Check if we need a new page
+        if (yPosition > pageHeight - 40) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        const title = getSuggestionTitle(suggestion, index);
+        const content = formatSuggestionContentForPDF(suggestion); // Full content, no truncation
+        const category = getSuggestionCategory(suggestion);
+        const impact = getSuggestionImpact(suggestion);
+
+        // Suggestion header
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(22, 101, 52);
+        pdf.text(`${index + 1}. ${title}`, margin, yPosition);
+        yPosition += 8;
+
+        // Category and impact
+        if (category || impact) {
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(107, 114, 128);
+          const info = `Category: ${category || 'General'} | Impact: ${impact || 'Medium'}`;
+          pdf.text(info, margin, yPosition);
+          yPosition += 6;
+        }
+
+        // Content
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(55, 65, 81);
+        
+        // Split text into lines that fit the page width
+        const maxWidth = 170;
+        const lines = pdf.splitTextToSize(content, maxWidth);
+        
+        lines.forEach((line) => {
+          if (yPosition > pageHeight - 20) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          pdf.text(line, margin, yPosition);
+          yPosition += 5;
+        });
+        
+        yPosition += 5; // Extra space between suggestions
+      });
+      } else {
+        // Handle non-array suggestions with full content
+        const content = formatSuggestionContentForPDF(suggestions); // Full content
+        
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(22, 101, 52);
+        pdf.text('AI Business Insights', margin, yPosition);
+        yPosition += 10;
+        
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(55, 65, 81);
+        
+        // Split content into properly sized lines
+        const lines = pdf.splitTextToSize(content, 170);
+        lines.forEach((line) => {
+          if (yPosition > pageHeight - 20) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          pdf.text(line, margin, yPosition);
+          yPosition += 5;
+        });
+        
+        // Add extra space after content
+        yPosition += 10;
+      }    // Footer
+    const pageCount = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(8);
+      pdf.setTextColor(107, 114, 128);
+      pdf.text(`Page ${i} of ${pageCount}`, pdf.internal.pageSize.width - 40, pdf.internal.pageSize.height - 10);
+    }
+
+    // Save
+    const fileName = `SmartBiz_AI_Suggestions_${filterLabel}_${currentDate.toISOString().split('T')[0]}.pdf`;
+    pdf.save(fileName);
+  };
+
+  // Helper function to format content for PDF (removes markdown but keeps full content)
+  const formatSuggestionContentForPDF = (suggestion, maxLength = null) => {
+    let content = formatSuggestionContent(suggestion);
+    
+    // Remove markdown formatting for clean PDF text
+    content = content
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic
+      .replace(/#+\s/g, '')           // Remove headers
+      .replace(/\n+/g, ' ')           // Replace newlines with spaces
+      .replace(/\s+/g, ' ')           // Replace multiple spaces with single space
+      .trim();
+    
+    // Only limit length if maxLength is specified (for summary table)
+    if (maxLength && content.length > maxLength) {
+      content = content.substring(0, maxLength - 3) + '...';
+    }
+    
+    return content;
+  };
+
+  // Helper function to render suggestions for PDF
+  const renderSuggestionsForPDF = () => {
+    if (!suggestions) return '';
+
+    if (Array.isArray(suggestions)) {
+      return suggestions.map((suggestion, index) => {
+        const title = getSuggestionTitle(suggestion, index);
+        const content = formatSuggestionContent(suggestion);
+        const category = getSuggestionCategory(suggestion);
+        const impact = getSuggestionImpact(suggestion);
+
+        return `
+          <div style="margin-bottom: 30px; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb;">
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+              <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">
+                ${index + 1}
+              </div>
+              <div>
+                <h3 style="margin: 0; color: #111827; font-size: 18px; font-weight: 600;">
+                  ${title}
+                </h3>
+                ${category ? `<span style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-top: 5px; display: inline-block;">${category}</span>` : ''}
+              </div>
+            </div>
+            ${impact ? `<p style="color: #059669; font-weight: 500; margin: 10px 0;"><strong>Impact:</strong> ${impact}</p>` : ''}
+            <div style="color: #374151; line-height: 1.6;">
+              ${content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else if (typeof suggestions === 'object' && suggestions !== null) {
+      const content = formatSuggestionContent(suggestions);
+      return `
+        <div style="padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb;">
+          <h3 style="color: #111827; font-size: 18px; font-weight: 600; margin-bottom: 15px;">AI Business Insights</h3>
+          <div style="color: #374151; line-height: 1.6;">
+            ${content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div style="padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb;">
+          <h3 style="color: #111827; font-size: 18px; font-weight: 600; margin-bottom: 15px;">AI Business Suggestion</h3>
+          <div style="color: #374151; line-height: 1.6;">
+            ${suggestions?.toString() || 'No suggestion content available'}
+          </div>
+        </div>
+      `;
+    }
   };
 
   // Helper function to format suggestions for better display
@@ -204,7 +662,7 @@ const Suggestions = ({ isOpen, onClose }) => {
               </div>
 
               {/* Suggestions Content */}
-              <div className="space-y-6">
+              <div ref={suggestionsContentRef} className="space-y-6">
                 {Array.isArray(suggestions) ? (
                   suggestions.map((suggestion, index) => {
                     const title = getSuggestionTitle(suggestion, index);
@@ -353,11 +811,19 @@ const Suggestions = ({ isOpen, onClose }) => {
                   </svg>
                   Save to Dashboard
                 </button>
-                <button className="flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Export as PDF
+                <button 
+                  onClick={handleExportToPDF}
+                  disabled={isExporting || !suggestions}
+                  className="flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isExporting ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-700"></div>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  )}
+                  {isExporting ? 'Generating PDF...' : 'Export as PDF'}
                 </button>
                 <button className="flex items-center gap-2 bg-white border-2 border-blue-200 text-blue-700 px-6 py-3 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
