@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, getUserPlan } from '../../services/user/smartFeaturesService';
+import Suggestions from './Suggestions';
 
 const SmartFeatures = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -140,7 +142,10 @@ const SmartFeatures = () => {
                       Revenue growth strategies
                     </div>
                   </div>
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl">
+                  <button 
+                    onClick={() => setShowSuggestions(true)}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
+                  >
                     Get Suggestions
                   </button>
                 </div>
@@ -297,6 +302,12 @@ const SmartFeatures = () => {
           </div>
         )}
       </div>
+
+      {/* Suggestions Modal */}
+      <Suggestions 
+        isOpen={showSuggestions}
+        onClose={() => setShowSuggestions(false)}
+      />
     </div>
   );
 };
