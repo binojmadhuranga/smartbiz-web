@@ -22,6 +22,7 @@ import SalesForm from "./pages/User/SalesForm";
 import Packages from "./pages/user/Packages";
 import ProfileManage from "./pages/User/ProfileManage";
 import Report from "./pages/User/Report";
+import SmartFeatures from "./pages/User/SmartFeatures";
 import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
         <Route path="packages" element={<Packages />} />
         <Route path="profile" element={<ProfileManage />} />
         <Route path="reports" element={<Report />} />
+        <Route path="smart-features" element={<SmartFeatures />} />
       </Route>
 
       <Route
