@@ -113,7 +113,7 @@ const ManageUsers = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-full flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading users...</p>
@@ -123,28 +123,18 @@ const ManageUsers = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 xs:p-3 sm:p-6 lg:p-8">
+    <div className="min-h-full p-2 xs:p-3 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg xs:rounded-xl shadow-sm border border-gray-200 p-4 xs:p-6 mb-4 xs:mb-6">
           <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate('/admin')}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="text-xl xs:text-2xl lg:text-3xl font-bold text-gray-900">Manage Users</h1>
-                <p className="text-sm xs:text-base text-gray-600 mt-1">Create, edit, and manage user accounts</p>
-              </div>
+            <div>
+              <h1 className="text-xl xs:text-2xl lg:text-3xl font-bold text-gray-900">Manage Users</h1>
+              <p className="text-sm xs:text-base text-gray-600 mt-1">Create, edit, and manage user accounts</p>
             </div>
             <button
               onClick={handleCreateUser}
-              className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm xs:text-base font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm md:w-100"
+              className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm xs:text-base font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm md:w-60 md:ml-10"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
