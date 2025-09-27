@@ -3,7 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/register";
 import { useAuth } from "./context/AuthContext";
-import AdminDashboard from "./pages/Admin/AdminDashboard"
+import AdminDashboardLayout from "./pages/Admin/AdminDashboardLayout";
+import AdminOverview from "./pages/Admin/AdminOverview";
 import ManageUsers from "./pages/Admin/ManageUsers";
 import ManagePlans from "./pages/Admin/ManagePlans";
 import DashboardLayout from "./pages/User/DashboardLayout";
@@ -32,31 +33,18 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
           <ProtectedRoute requiredRole="ADMIN">
-            <AdminDashboard />
+            <AdminDashboardLayout />
           </ProtectedRoute>
         }
-      />
-
-      <Route
-        path="/admin/users"
-        element={
-          <ProtectedRoute requiredRole="ADMIN">
-            <ManageUsers />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/admin/manage-plans"
-        element={
-          <ProtectedRoute requiredRole="ADMIN">
-            <ManagePlans />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route index element={<Navigate to="/admin/overview" />} />
+        <Route path="overview" element={<AdminOverview />} />
+        <Route path="users" element={<ManageUsers />} />
+        <Route path="manage-plans" element={<ManagePlans />} />
+      </Route>
 
       <Route
         path="/dashboard/*"
