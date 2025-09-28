@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, getUserPlan } from '../../services/user/smartFeaturesService';
+import { getCurrentUser, getUserPlan, generatePost } from '../../services/user/smartFeaturesService';
 import Suggestions from './Suggestions';
 
 const SmartFeatures = () => {
@@ -8,6 +8,9 @@ const SmartFeatures = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showContentGeneration, setShowContentGeneration] = useState(false);
+  const [generatedPost, setGeneratedPost] = useState(null);
+  const [generatingPost, setGeneratingPost] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +33,21 @@ const SmartFeatures = () => {
 
   const handleNavigateToPackages = () => {
     navigate('/dashboard/packages');
+  };
+
+  const handleGeneratePost = async () => {
+    try {
+      setGeneratingPost(true);
+      setError('');
+      const postData = await generatePost();
+      setGeneratedPost(postData);
+      setShowContentGeneration(true);
+    } catch (err) {
+      console.error('Error generating post:', err);
+      setError(err.message || 'Failed to generate post content');
+    } finally {
+      setGeneratingPost(false);
+    }
   };
 
   if (loading) {
@@ -188,8 +206,19 @@ const SmartFeatures = () => {
                       Business emails
                     </div>
                   </div>
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl">
-                    Create Content
+                  <button 
+                    onClick={handleGeneratePost}
+                    disabled={generatingPost}
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {generatingPost ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Generating...
+                      </div>
+                    ) : (
+                      'Create Content'
+                    )}
                   </button>
                 </div>
               </div>
@@ -302,6 +331,102 @@ const SmartFeatures = () => {
           </div>
         )}
       </div>
+
+      {/* Content Generation Modal */}
+      {showContentGeneration && generatedPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Generated Content</h3>
+                    <p className="text-purple-100 text-sm">AI-powered marketing post</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowContentGeneration(false)}
+                  className="p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto p-6">
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Your Marketing Post</h3>
+                    <p className="text-purple-600 text-sm">Ready to copy and share!</p>
+                  </div>
+                </div>
+
+                {/* Generated Content Display */}
+                <div className="bg-white rounded-lg border border-purple-200 p-4 shadow-sm">
+                  <div className="prose prose-sm max-w-none">
+                    <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
+                      {generatedPost.content}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 mt-6">
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(generatedPost.content)}
+                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy to Clipboard
+                  </button>
+                  <button 
+                    onClick={handleGeneratePost}
+                    disabled={generatingPost}
+                    className="flex items-center gap-2 bg-white border-2 border-purple-200 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-50 transition-colors font-medium disabled:opacity-50"
+                  >
+                    {generatingPost ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Generate New
+                      </>
+                    )}
+                  </button>
+                  <button className="flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                    Share on Social Media
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Suggestions Modal */}
       <Suggestions 
