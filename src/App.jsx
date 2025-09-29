@@ -7,6 +7,7 @@ import AdminDashboardLayout from "./pages/Admin/AdminDashboardLayout";
 import AdminOverview from "./pages/Admin/AdminOverview";
 import ManageUsers from "./pages/Admin/ManageUsers";
 import ManagePlans from "./pages/Admin/ManagePlans";
+import Reports from "./pages/Admin/Reports";
 import DashboardLayout from "./pages/User/DashboardLayout";
 import Overview from "./pages/User/Overview";
 import Products from "./pages/User/Products";
@@ -45,6 +46,7 @@ function App() {
         <Route path="overview" element={<AdminOverview />} />
         <Route path="users" element={<ManageUsers />} />
         <Route path="manage-plans" element={<ManagePlans />} />
+        <Route path="reports" element={<Reports />} />
       </Route>
 
       <Route
