@@ -10,13 +10,13 @@ const Navbar = ({ onLogout, onMenuToggle, showMobileMenu = false, variant = "def
   const navigate = useNavigate();
   
   const bgColor = variant === "dashboard" ? "bg-gray-800" : 
-                  variant === "admin" ? "bg-gradient-to-r from-gray-800 to-blue-200" : 
+                  variant === "admin" ? "bg-gradient-to-r from-gray-600 to-gray-800" : 
                   "bg-green-900";
   const avatarBg = variant === "dashboard" ? "bg-gray-600" : 
                    variant === "admin" ? "bg-blue-100" : 
                    "bg-green-200";
   const avatarIconColor = variant === "dashboard" ? "text-gray-300" : 
-                          variant === "admin" ? "text-gray-700" : 
+                          variant === "admin" ? "text-green-700" : 
                           "text-green-800";
   const menuButtonHover = variant === "dashboard" ? "hover:bg-gray-700" : 
                           variant === "admin" ? "hover:bg-gray-600" : 
