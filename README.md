@@ -1,7 +1,6 @@
 # SmartBiz
 
 SmartBiz is a modern ERP-lite platform designed to help small and medium business owners efficiently manage their **sales, customers, inventory**, and **daily operations**. With built-in **AI features** for reporting, insights, and content generation, SmartBiz bridges the gap between simplicity and powerful business intelligence.
-
 ---
 ## ✨ Features
 
