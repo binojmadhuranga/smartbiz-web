@@ -5,6 +5,7 @@ import { NavigationProvider } from "../../context/NavigationContext";
 import Navbar from "../../common/components/Navbar/Navbar";
 import UserSidebar from "../../components/UserSidebar/UserSidebar";
 import NavigationLoader from "../../common/components/NavigationLoader/NavigationLoader";
+import dashboardBg from "../../assets/dashboard.png";
 
 
 const DashboardLayout = () => {
@@ -23,7 +24,15 @@ const DashboardLayout = () => {
 
   return (
     <NavigationProvider>
-      <div className="bg-gray-50 h-[100vh]">
+      <div 
+        className="bg-gray-50 h-[100vh]"
+        style={{
+          backgroundImage: `url(${dashboardBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <Navbar 
           onLogout={handleLogout}
           onMenuToggle={toggleSidebar}
