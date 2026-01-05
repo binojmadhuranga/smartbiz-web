@@ -191,17 +191,17 @@ const ProductForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={handleCancel}
-            className="text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-gray-900 hover:text-gray-100 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-black">
             {isEditMode ? 'Edit Product' : 'Add New Product'}
           </h1>
         </div>
-        <p className="text-gray-600">
+        <p className="text-black">
           {isEditMode ? 'Update the product information below.' : 'Fill in the details to create a new product.'}
         </p>
       </div>
@@ -214,11 +214,11 @@ const ProductForm = () => {
       )}
 
       {/* Form */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Product Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
               Product Name *
             </label>
             <input
@@ -228,14 +228,14 @@ const ProductForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter product name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-200 mb-2">
               Description
             </label>
             <textarea
@@ -245,13 +245,13 @@ const ProductForm = () => {
               onChange={handleInputChange}
               placeholder="Enter product description (optional)"
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
             />
           </div>
 
           {/* Quantity */}
           <div>
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-200 mb-2">
               Quantity *
             </label>
             <input
@@ -263,7 +263,7 @@ const ProductForm = () => {
               placeholder="Enter quantity"
               min="1"
               step="1"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
@@ -272,7 +272,7 @@ const ProductForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Unit Buying Price */}
             <div>
-              <label htmlFor="unitBuyingPrice" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="unitBuyingPrice" className="block text-sm font-medium text-gray-200 mb-2">
                 Unit Buying Price ($) *
               </label>
               <input
@@ -284,14 +284,14 @@ const ProductForm = () => {
                 placeholder="0.00"
                 min="0.01"
                 step="0.01"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                 required
               />
             </div>
 
             {/* Unit Selling Price */}
             <div>
-              <label htmlFor="unitSellingPrice" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="unitSellingPrice" className="block text-sm font-medium text-gray-200 mb-2">
                 Unit Selling Price ($) *
               </label>
               <input
@@ -303,7 +303,7 @@ const ProductForm = () => {
                 placeholder="0.00"
                 min="0.01"
                 step="0.01"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                 required
               />
             </div>
@@ -311,20 +311,20 @@ const ProductForm = () => {
 
           {/* Suppliers Section */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Suppliers
             </label>
             {suppliersLoading ? (
-              <div className="flex items-center justify-center py-4 border border-gray-300 rounded-lg">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-                <span className="ml-2 text-sm text-gray-500">Loading suppliers...</span>
+              <div className="flex items-center justify-center py-4 border border-gray-600 bg-gray-700/30 rounded-lg">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-400"></div>
+                <span className="ml-2 text-sm text-gray-300">Loading suppliers...</span>
               </div>
             ) : suppliers.length === 0 ? (
-              <div className="p-4 border border-gray-300 rounded-lg text-center text-gray-500">
+              <div className="p-4 border border-gray-600 bg-gray-700/30 rounded-lg text-center text-gray-300">
                 No suppliers available. Create a supplier first.
               </div>
             ) : (
-              <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+              <div className="border border-gray-600 bg-gray-700/30 rounded-lg p-4 max-h-48 overflow-y-auto">
                 <div className="space-y-2">
                   {suppliers.map((supplier, index) => {
                     const sid = supplierIdOf(supplier);
@@ -336,11 +336,11 @@ const ProductForm = () => {
                           checked={checked}
                           onChange={() => sid != null && handleSupplierChange(sid)}
                           disabled={sid == null}
-                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-500 rounded disabled:opacity-50"
                         />
-                        <span className="ml-3 text-sm text-gray-900">{supplier.name}</span>
+                        <span className="ml-3 text-sm text-gray-100">{supplier.name}</span>
                         {supplier.email && (
-                          <span className="ml-2 text-sm text-gray-500">({supplier.email})</span>
+                          <span className="ml-2 text-sm text-gray-400">({supplier.email})</span>
                         )}
                       </label>
                     );
@@ -349,7 +349,7 @@ const ProductForm = () => {
               </div>
             )}
             {formData.supplierIds.length > 0 && (
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 text-sm text-gray-300">
                 Selected {formData.supplierIds.length} supplier{formData.supplierIds.length !== 1 ? 's' : ''}
               </div>
             )}
@@ -359,14 +359,14 @@ const ProductForm = () => {
           {formData.unitBuyingPrice && formData.unitSellingPrice && 
            !isNaN(formData.unitBuyingPrice) && !isNaN(formData.unitSellingPrice) && 
            parseFloat(formData.unitSellingPrice) > parseFloat(formData.unitBuyingPrice) && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-900/30 border border-green-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm font-medium text-green-800">Profit Information</span>
+                <span className="text-sm font-medium text-green-300">Profit Information</span>
               </div>
-              <div className="mt-2 text-sm text-green-700">
+              <div className="mt-2 text-sm text-green-200">
                 <p>Profit per unit: ${(parseFloat(formData.unitSellingPrice) - parseFloat(formData.unitBuyingPrice)).toFixed(2)}</p>
                 <p>Profit margin: {(((parseFloat(formData.unitSellingPrice) - parseFloat(formData.unitBuyingPrice)) / parseFloat(formData.unitBuyingPrice)) * 100).toFixed(1)}%</p>
               </div>
@@ -374,11 +374,11 @@ const ProductForm = () => {
           )}
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end gap-4 pt-6 border-t border-gray-700/50">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="px-6 py-2 border border-gray-600 text-gray-200 rounded-lg hover:bg-gray-700/50 font-medium transition-colors"
             >
               Cancel
             </button>
