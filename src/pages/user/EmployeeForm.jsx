@@ -154,17 +154,17 @@ const EmployeeForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={handleCancel}
-            className="text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-gray-900 hover:text-gray-100 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-black">
             {isEditMode ? 'Edit Employee' : 'Add New Employee'}
           </h1>
         </div>
-        <p className="text-gray-600">
+        <p className="text-black">
           {isEditMode ? 'Update the employee information below.' : 'Fill in the details to create a new employee.'}
         </p>
       </div>
@@ -177,12 +177,12 @@ const EmployeeForm = () => {
       )}
 
       {/* Form */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Employee Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
               Employee Name *
             </label>
             <input
@@ -192,14 +192,14 @@ const EmployeeForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter employee name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
           {/* Role */}
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="role" className="block text-sm font-medium text-gray-200 mb-2">
               Role/Position
             </label>
             <input
@@ -209,13 +209,13 @@ const EmployeeForm = () => {
               value={formData.role}
               onChange={handleInputChange}
               placeholder="Enter employee role or position (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
               Email Address *
             </label>
             <input
@@ -225,14 +225,14 @@ const EmployeeForm = () => {
               value={formData.email}
               onChange={handleInputChange}
               placeholder="Enter email address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
 
           {/* Salary */}
           <div>
-            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="salary" className="block text-sm font-medium text-gray-200 mb-2">
               Salary
             </label>
             <input
@@ -242,25 +242,25 @@ const EmployeeForm = () => {
               value={formData.salary}
               onChange={handleInputChange}
               placeholder="Enter salary amount (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               min="0"
               step="0.01"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end gap-4 pt-6 border-t border-gray-700/50">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="px-6 py-2 border-2 border-gray-500 text-gray-200 rounded-lg hover:bg-gray-700/50 font-medium transition-colors shadow-md shadow-gray-500/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2 border-2 border-gray-500 shadow-md shadow-gray-500/50"
             >
               {loading && (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
