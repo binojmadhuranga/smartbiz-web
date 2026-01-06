@@ -378,14 +378,14 @@ const ProductForm = () => {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 border border-gray-600 text-gray-200 rounded-lg hover:bg-gray-700/50 font-medium transition-colors"
+              className="px-6 py-2 border-2 border-gray-500 text-gray-200 rounded-lg hover:bg-gray-700/50 font-medium transition-colors shadow-md shadow-gray-500/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2 border-2 border-gray-500 shadow-md shadow-gray-500/50"
             >
               {loading && (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
