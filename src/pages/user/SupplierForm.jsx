@@ -180,17 +180,17 @@ const SupplierForm = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={handleCancel}
-            className="text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-gray-900 hover:text-gray-100 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-black">
             {isEditMode ? 'Edit Supplier' : 'Add New Supplier'}
           </h1>
         </div>
-        <p className="text-gray-600">
+        <p className="text-black">
           {isEditMode ? 'Update the supplier information below.' : 'Fill in the details to create a new supplier.'}
         </p>
       </div>
@@ -203,11 +203,11 @@ const SupplierForm = () => {
       )}
 
       {/* Form */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Supplier Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
               Supplier Name *
             </label>
             <input
@@ -217,7 +217,7 @@ const SupplierForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter supplier name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               required
             />
           </div>
@@ -226,7 +226,7 @@ const SupplierForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
                 Email Address
               </label>
               <input
@@ -236,13 +236,13 @@ const SupplierForm = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter email address (optional)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-200 mb-2">
                 Phone Number
               </label>
               <input
@@ -252,14 +252,14 @@ const SupplierForm = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Enter phone number (optional)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Address */}
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-200 mb-2">
               Address
             </label>
             <textarea
@@ -269,26 +269,26 @@ const SupplierForm = () => {
               onChange={handleInputChange}
               placeholder="Enter supplier address (optional)"
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-vertical"
             />
           </div>
 
           {/* Items Section */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Items
             </label>
             {itemsLoading ? (
-              <div className="flex items-center justify-center py-4 border border-gray-300 rounded-lg">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-                <span className="ml-2 text-sm text-gray-500">Loading items...</span>
+              <div className="flex items-center justify-center py-4 border border-gray-600 bg-gray-700/30 rounded-lg">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-400"></div>
+                <span className="ml-2 text-sm text-gray-300">Loading items...</span>
               </div>
             ) : items.length === 0 ? (
-              <div className="p-4 border border-gray-300 rounded-lg text-center text-gray-500">
+              <div className="p-4 border border-gray-600 bg-gray-700/30 rounded-lg text-center text-gray-300">
                 No items available. Create an item first.
               </div>
             ) : (
-              <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+              <div className="border border-gray-600 bg-gray-700/30 rounded-lg p-4 max-h-48 overflow-y-auto">
                 <div className="space-y-2">
                   {items.map((item, index) => {
                     const iid = itemIdOf(item);
@@ -300,11 +300,11 @@ const SupplierForm = () => {
                           checked={checked}
                           onChange={() => iid != null && handleItemChange(iid)}
                           disabled={iid == null}
-                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded disabled:opacity-50"
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-500 rounded disabled:opacity-50"
                         />
-                        <span className="ml-3 text-sm text-gray-900">{item.name}</span>
+                        <span className="ml-3 text-sm text-gray-100">{item.name}</span>
                         {item.description && (
-                          <span className="ml-2 text-sm text-gray-500">({item.description})</span>
+                          <span className="ml-2 text-sm text-gray-400">({item.description})</span>
                         )}
                       </label>
                     );
@@ -313,7 +313,7 @@ const SupplierForm = () => {
               </div>
             )}
             {formData.itemIds.length > 0 && (
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 text-sm text-gray-300">
                 Selected {formData.itemIds.length} item{formData.itemIds.length !== 1 ? 's' : ''}
               </div>
             )}
@@ -321,14 +321,14 @@ const SupplierForm = () => {
 
           {/* Contact Information Display */}
           {(formData.email || formData.phone) && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-900/30 border border-green-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm font-medium text-green-800">Contact Information</span>
+                <span className="text-sm font-medium text-green-300">Contact Information</span>
               </div>
-              <div className="text-sm text-green-700 space-y-1">
+              <div className="text-sm text-green-200 space-y-1">
                 {formData.email && <p>Email: {formData.email}</p>}
                 {formData.phone && <p>Phone: {formData.phone}</p>}
               </div>
@@ -336,27 +336,23 @@ const SupplierForm = () => {
           )}
 
           {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <div className="flex justify-end gap-4 pt-6 border-t border-gray-700/50">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-6 py-2 border-2 border-gray-500 text-gray-200 rounded-lg hover:bg-gray-700/50 font-medium transition-colors shadow-md shadow-gray-500/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2 border-2 border-gray-500 shadow-md shadow-gray-500/50"
             >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  {isEditMode ? 'Updating...' : 'Creating...'}
-                </div>
-              ) : (
-                isEditMode ? 'Update Supplier' : 'Create Supplier'
+              {loading && (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               )}
+              {loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Supplier' : 'Create Supplier')}
             </button>
           </div>
         </form>

@@ -147,14 +147,14 @@ const Employees = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 p-4">
           <div className="max-w-md">
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="search" className="block text-sm font-medium text-gray-100 mb-2">
               Search Employees
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -164,7 +164,7 @@ const Employees = () => {
                 placeholder="Search by employee name..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                className="block w-full pl-10 pr-3 py-2 bg-gray-700/50 border border-gray-600 text-gray-100 placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
               />
               {(isSearching || loading) && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -184,51 +184,51 @@ const Employees = () => {
       )}
 
       {/* Employees Table - Desktop */}
-      <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="hidden md:block bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-700/50">
+          <thead className="bg-gray-900/60">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Employee Info
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Role & Department
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Contact
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Salary
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-gray-800/20 divide-y divide-gray-700/40">
             {employees.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                <td colSpan="5" className="px-6 py-8 text-center text-gray-300">
                   {search ? 'No employees found matching your search.' : 'No employees found. Create your first employee!'}
                 </td>
               </tr>
             ) : (
               employees.map((employee, index) => (
-                <tr key={employeeKey(employee, index)} className="hover:bg-gray-50 transition-colors">
+                <tr key={employeeKey(employee, index)} className="hover:bg-gray-700/30 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                    <div className="text-sm text-gray-500">ID: {getEmployeeId(employee)}</div>
+                    <div className="text-sm font-medium text-gray-100">{employee.name}</div>
+                    <div className="text-sm text-gray-400">ID: {getEmployeeId(employee)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{employee.role || 'N/A'}</div>
-                    <div className="text-sm text-gray-500">{employee.department || 'No department'}</div>
+                    <div className="text-sm text-gray-200">{employee.role || 'N/A'}</div>
+                    <div className="text-sm text-gray-400">{employee.department || 'No department'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{employee.email || 'N/A'}</div>
-                    <div className="text-sm text-gray-500">{employee.phone || 'N/A'}</div>
+                    <div className="text-sm text-gray-200">{employee.email || 'N/A'}</div>
+                    <div className="text-sm text-gray-400">{employee.phone || 'N/A'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-100">
                       {employee.salary ? `$${employee.salary.toLocaleString()}` : 'N/A'}
                     </div>
                   </td>
@@ -236,14 +236,14 @@ const Employees = () => {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleEdit(employee)}
-                        className="text-green-600 hover:text-green-900 transition-colors"
+                        className="text-green-400 hover:text-green-300 transition-colors"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(getEmployeeId(employee), employee.name)}
                         disabled={deleteLoading === getEmployeeId(employee)}
-                        className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
+                        className="text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
                       >
                         {deleteLoading === getEmployeeId(employee) ? 'Deleting...' : 'Delete'}
                       </button>
@@ -259,28 +259,28 @@ const Employees = () => {
       {/* Employees Cards - Mobile */}
       <div className="md:hidden space-y-4">
         {employees.length === 0 ? (
-          <div className="bg-white rounded-lg p-6 text-center text-gray-500">
+          <div className="bg-gray-800/40 backdrop-blur-md rounded-lg p-6 text-center border border-gray-700/50">
             {search ? 'No employees found matching your search.' : 'No employees found. Create your first employee!'}
           </div>
         ) : (
           employees.map((employee, index) => (
-            <div key={employeeKey(employee, index)} className="bg-white rounded-lg shadow p-4">
+            <div key={employeeKey(employee, index)} className="bg-gray-800/40 backdrop-blur-md rounded-lg shadow-lg border border-gray-700/50 p-4">
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="font-medium text-gray-900">{employee.name}</h3>
-                  <p className="text-sm text-gray-500">ID: {getEmployeeId(employee)}</p>
+                  <h3 className="font-medium text-gray-100">{employee.name}</h3>
+                  <p className="text-sm text-gray-400">ID: {getEmployeeId(employee)}</p>
                 </div>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleEdit(employee)}
-                    className="text-green-600 hover:text-green-900 text-sm font-medium transition-colors"
+                    className="text-green-400 hover:text-green-300 text-sm font-medium transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(getEmployeeId(employee), employee.name)}
                     disabled={deleteLoading === getEmployeeId(employee)}
-                    className="text-red-600 hover:text-red-900 text-sm font-medium transition-colors disabled:opacity-50"
+                    className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {deleteLoading === getEmployeeId(employee) ? 'Deleting...' : 'Delete'}
                   </button>
@@ -289,24 +289,24 @@ const Employees = () => {
               
               <div className="space-y-2">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Role: </span>
-                  <span className="text-sm text-gray-900">{employee.role || 'N/A'}</span>
+                  <span className="text-sm font-medium text-gray-300">Role: </span>
+                  <span className="text-sm text-gray-100">{employee.role || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Department: </span>
-                  <span className="text-sm text-gray-900">{employee.department || 'N/A'}</span>
+                  <span className="text-sm font-medium text-gray-300">Department: </span>
+                  <span className="text-sm text-gray-100">{employee.department || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Email: </span>
-                  <span className="text-sm text-gray-900">{employee.email || 'N/A'}</span>
+                  <span className="text-sm font-medium text-gray-300">Email: </span>
+                  <span className="text-sm text-gray-100">{employee.email || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Phone: </span>
-                  <span className="text-sm text-gray-900">{employee.phone || 'N/A'}</span>
+                  <span className="text-sm font-medium text-gray-300">Phone: </span>
+                  <span className="text-sm text-gray-100">{employee.phone || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Salary: </span>
-                  <span className="text-sm text-gray-900">
+                  <span className="text-sm font-medium text-gray-300">Salary: </span>
+                  <span className="text-sm text-gray-100">
                     {employee.salary ? `$${employee.salary.toLocaleString()}` : 'N/A'}
                   </span>
                 </div>
