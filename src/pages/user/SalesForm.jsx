@@ -324,9 +324,9 @@ const SalesForm = () => {
       </div>
 
       {/* Additional Info */}
-      <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg max-w-2xl">
-        <h3 className="text-sm font-medium text-blue-300 mb-2">Note:</h3>
-        <ul className="text-xs text-blue-200 space-y-1">
+      <div className="mt-6 p-4 bg-gray-800/40 backdrop-blur-md border border-gray-700/50 rounded-lg max-w-2xl">
+        <h3 className="text-sm font-medium text-gray-800 mb-2">Note:</h3>
+        <ul className="text-xs text-black space-y-1">
           <li>• The total amount will be calculated automatically</li>
           <li>• Sale date will be recorded as the current date and time</li>
           <li>• All fields marked with (*) are required</li>
