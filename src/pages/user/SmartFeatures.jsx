@@ -319,12 +319,12 @@ const SmartFeatures = () => {
               </div>
               <div>
                 <p className="font-medium text-gray-100">{user?.name}</p>
-                <p className="text-sm text-gray-400">{user?.email}</p>
+                <p className="text-sm text-white">{user?.email}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-300">Current Plan:</span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${isPro ? 'bg-purple-600/30 text-purple-200 border border-purple-500/50' : 'bg-gray-700/50 text-gray-200 border border-gray-600/50'}`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${isPro ? 'bg-purple-600/30 text-purple-400 border border-purple-500/50' : 'bg-gray-700/50 text-gray-200 border border-gray-600/50'}`}>
                 {user?.plan}
               </span>
             </div>
@@ -352,7 +352,7 @@ const SmartFeatures = () => {
                 </div>
               </div>
               <div className="p-6">
-                <p className="text-gray-300 mb-6">Get personalized business recommendations based on your data and market trends to improve performance and increase revenue.</p>
+                <p className="text-gray-100 mb-6">Get personalized business recommendations based on your data and market trends to improve performance and increase revenue.</p>
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-2 text-sm text-gray-300">
                     <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -482,8 +482,8 @@ const SmartFeatures = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-100">AI Business Suggestions</h4>
-                      <p className="text-gray-400 text-sm">Get personalized recommendations to grow your business</p>
+                      <h3 className="font-semibold text-gray-100">AI Business Suggestions</h3>
+                      <p className="text-white text-sm">Get personalized recommendations to grow your business</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -493,8 +493,8 @@ const SmartFeatures = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-100">Content Generation</h4>
-                      <p className="text-gray-400 text-sm">Create marketing content and social media posts with AI</p>
+                      <h3 className="font-semibold text-gray-100">Content Generation</h3>
+                      <p className="text-white text-sm">Create marketing content and social media posts with AI</p>
                     </div>
                   </div>
                 </div>
@@ -506,8 +506,8 @@ const SmartFeatures = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-100">Advanced Analytics</h4>
-                      <p className="text-gray-400 text-sm">Deep insights into your business performance</p>
+                      <h3 className="font-semibold text-gray-100">Advanced Analytics</h3>
+                      <p className="text-white text-sm">Deep insights into your business performance</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -517,8 +517,8 @@ const SmartFeatures = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-100">Priority Support</h4>
-                      <p className="text-gray-400 text-sm">Get faster support and dedicated assistance</p>
+                      <h3 className="font-semibold text-gray-100">Priority Support</h3>
+                      <p className="text-white text-sm">Get faster support and dedicated assistance</p>
                     </div>
                   </div>
                 </div>
@@ -535,7 +535,7 @@ const SmartFeatures = () => {
                   </svg>
                   Upgrade to PRO Plan
                 </button>
-                <p className="text-gray-400 text-sm mt-3">
+                <p className="text-white text-sm mt-3">
                   Unlock all features and take your business to the next level
                 </p>
               </div>
