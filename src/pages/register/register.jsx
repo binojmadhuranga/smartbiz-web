@@ -25,12 +25,20 @@ const Register = () => {
             return;
         }
         try {
-            await axios.post("/auth/register", form);
-            setMessage("Registration successful! Redirecting to login...");
+            const response = await axios.post("/auth/register", form);
+            const successMessage =
+                typeof response.data === "string"
+                    ? response.data
+                    : response.data?.message || "Registration successful! Redirecting to login...";
+            setMessage(successMessage);
             setMessageType("success");
             setTimeout(() => navigate("/login"), 1800);
         } catch (err) {
-            setMessage(err.response?.data?.message || "Registration failed");
+            const errorMessage =
+                typeof err.response?.data === "string"
+                    ? err.response?.data
+                    : err.response?.data?.message || "Registration failed";
+            setMessage(errorMessage);
             setMessageType("error");
         }
     };
