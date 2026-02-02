@@ -2,11 +2,7 @@ import api from '../common/axiosConfig';
 
 const DASHBOARD_BASE_URL = '/dashboard';
 
-/**
- * Get dashboard statistics with optional filter
- * @param {string} filter - Filter type (monthly, yearly, weekly, daily)
- * @returns {Promise<Object>} Dashboard statistics object
- */
+
 export const getDashboardStats = async (filter = 'monthly') => {
   try {
     const response = await api.get(`${DASHBOARD_BASE_URL}?filter=${filter}`);
@@ -17,12 +13,7 @@ export const getDashboardStats = async (filter = 'monthly') => {
   }
 };
 
-/**
- * Get dashboard data for a specific date range
- * @param {string} startDate - Start date in YYYY-MM-DD format
- * @param {string} endDate - End date in YYYY-MM-DD format
- * @returns {Promise<Object>} Dashboard statistics for date range
- */
+
 export const getDashboardStatsByDateRange = async (startDate, endDate) => {
   try {
     const response = await api.get(`${DASHBOARD_BASE_URL}?startDate=${startDate}&endDate=${endDate}`);
@@ -33,10 +24,6 @@ export const getDashboardStatsByDateRange = async (startDate, endDate) => {
   }
 };
 
-/**
- * Get real-time dashboard updates
- * @returns {Promise<Object>} Real-time dashboard statistics
- */
 export const getRealTimeDashboardStats = async () => {
   try {
     const response = await api.get(`${DASHBOARD_BASE_URL}/realtime`);

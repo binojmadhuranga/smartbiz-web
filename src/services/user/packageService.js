@@ -46,10 +46,8 @@ export const uploadPaymentSlip = async (paymentSlip) => {
   }
 };
 
-/**
- * Update user plan to Pro
- * @returns {Promise<number>} User ID
- */
+
+
 export const updatePlanToPro = async () => {
   try {
     const response = await api.put(`${PACKAGE_BASE_URL}/plan`, {
@@ -74,11 +72,7 @@ export const updatePlanToPro = async () => {
   }
 };
 
-/**
- * Request Pro plan upgrade by uploading payment slip and updating plan
- * @param {File} paymentSlip - Payment slip file
- * @returns {Promise<Object>} Combined response with upload and plan update
- */
+
 export const requestProPlanUpgrade = async (paymentSlip) => {
   try {
     // First upload the payment slip
@@ -100,11 +94,7 @@ export const requestProPlanUpgrade = async (paymentSlip) => {
   }
 };
 
-/**
- * Get current user plan information
- * @param {string|number} userId - User ID (optional, uses current user if not provided)
- * @returns {Promise<Object>} User data with current plan
- */
+
 export const getUserPlan = async (userId = null) => {
   try {
     const url = userId 
@@ -126,10 +116,7 @@ export const getUserPlan = async (userId = null) => {
   }
 };
 
-/**
- * Get available package plans with features
- * @returns {Array} Array of available plans with features
- */
+
 export const getAvailablePlans = () => {
   return [
     {
@@ -164,20 +151,12 @@ export const getAvailablePlans = () => {
   ];
 };
 
-/**
- * Check if user has pro features
- * @param {string} plan - Current user plan
- * @returns {boolean} True if user has pro plan
- */
+
 export const hasProFeatures = (plan) => {
   return plan === 'PRO';
 };
 
-/**
- * Get plan display information
- * @param {string} plan - Plan type
- * @returns {Object} Plan display information
- */
+
 export const getPlanDisplayInfo = (plan) => {
   const planInfo = {
     NORMAL: {
