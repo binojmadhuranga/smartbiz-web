@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Input from "../../common/components/Input/Input";
-import axios from "../../services/common/axiosConfig";
 import { useNavigate, Link } from "react-router-dom";
+import { register as registerUser } from "../../services/auth/authService";
 
 const Register = () => {
     const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "", role: "USER" });
@@ -25,11 +25,11 @@ const Register = () => {
             return;
         }
         try {
-            const response = await axios.post("/auth/register", form);
+            const response = await registerUser(form);
             const successMessage =
-                typeof response.data === "string"
-                    ? response.data
-                    : response.data?.message || "Registration successful! Redirecting to login...";
+                typeof response === "string"
+                    ? response
+                    : response?.message || "Registration successful! Redirecting to login...";
             setMessage(successMessage);
             setMessageType("success");
             setTimeout(() => navigate("/login"), 1800);
