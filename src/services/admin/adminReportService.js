@@ -2,10 +2,7 @@ import axiosInstance from '../common/axiosConfig';
 
 const REPORTS_BASE_URL = '/admin/reports';
 
-/**
- * Get Users Report as PDF
- * @returns {Promise<Blob>} PDF blob data
- */
+
 export const getUsersReportPDF = async () => {
   try {
     const response = await axiosInstance.get(`${REPORTS_BASE_URL}/users`, {
@@ -36,11 +33,7 @@ export const getUsersReportPDF = async () => {
   }
 };
 
-/**
- * Download Users Report PDF
- * @param {string} filename - Optional filename for download
- * @returns {Promise<void>}
- */
+
 export const downloadUsersReportPDF = async (filename = 'users_report.pdf') => {
   try {
     const pdfBlob = await getUsersReportPDF();
