@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/register";
+import ForgotPassword from "./pages/forgotPw/forgotPw";
 import { useAuth } from "./context/AuthContext";
 import AdminDashboardLayout from "./pages/Admin/AdminDashboardLayout";
 import AdminOverview from "./pages/Admin/AdminOverview";
@@ -33,6 +34,7 @@ function App() {
     <Routes>
       <Route path="/login" element={!token ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={!token ? <ForgotPassword /> : <Navigate to="/" />} />
 
       <Route
         path="/admin/*"
