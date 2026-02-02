@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Input from "../../common/components/Input/Input";
-import { sendOTP, resetPassword } from "../../services/common/forgotPasswordService";
+import { sendOTP, resetPassword } from "../../services/auth/authService";
 
 const ForgotPassword = () => {
     const [step, setStep] = useState(1); // 1: Email, 2: OTP & New Password

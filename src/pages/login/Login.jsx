@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "../../services/common/axiosConfig";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../../common/components/Input/Input";
+import { login as loginUser } from "../../services/auth/authService";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,8 +16,8 @@ const Login = () => {
         setError("");
 
         try {
-            const res = await axios.post("/auth/login", { email, password });
-            const { token, role, name } = res.data;
+            const data = await loginUser(email, password);
+            const { token, role, name } = data;
             login(token, role, name);
             if (role === "ADMIN") {
                 navigate("/admin");
