@@ -27,7 +27,7 @@ const Login = () => {
                 setError("Unknown role");
             }
         } catch (err) {
-            setError(err.response?.data?.message || "Login failed");
+            setError(err.message || "Login failed");
         }
     };
 
