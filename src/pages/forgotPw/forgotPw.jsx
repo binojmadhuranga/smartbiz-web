@@ -25,7 +25,7 @@ const ForgotPassword = () => {
             setSuccess(response || "OTP sent to registered email");
             setStep(2);
         } catch (err) {
-            setError(err.response?.data?.message || "Failed to send OTP. Please check your email.");
+            setError(err.message || "Failed to send OTP. Please check your email.");
         } finally {
             setLoading(false);
         }
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
                 navigate("/login");
             }, 2000);
         } catch (err) {
-            setError(err.response?.data?.message || "Failed to reset password. Please check your OTP.");
+            setError(err.message || "Failed to reset password. Please check your OTP.");
         } finally {
             setLoading(false);
         }
