@@ -34,10 +34,7 @@ const Register = () => {
             setMessageType("success");
             setTimeout(() => navigate("/login"), 1800);
         } catch (err) {
-            const errorMessage =
-                typeof err.response?.data === "string"
-                    ? err.response?.data
-                    : err.response?.data?.message || "Registration failed";
+            const errorMessage = err.message || "Registration failed";
             setMessage(errorMessage);
             setMessageType("error");
         }
